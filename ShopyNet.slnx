@@ -1,7 +1,12 @@
 <Solution>
-  <Project Path="Shop.Application/Shop.Application.csproj" />
-  <Project Path="Shop.Domain/Shop.Domain.csproj" />
-  <Project Path="Shop.Infrastructure/Shop.Infrastructure.csproj" />
-  <Project Path="Shop.Presentation.Facade/Shop.Presentation.Facade.csproj" />
-  <Project Path="Shop.Query/Shop.Query.csproj" />
+  <Folder Name="/Common/">
+    <Project Path="Common/Common.Domain/Common.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Shop/">
+    <Project Path="Shop.Application/Shop.Application.csproj" />
+    <Project Path="Shop.Domain/Shop.Domain.csproj" />
+    <Project Path="Shop.Infrastructure/Shop.Infrastructure.csproj" />
+    <Project Path="Shop.Presentation.Facade/Shop.Presentation.Facade.csproj" />
+    <Project Path="Shop.Query/Shop.Query.csproj" />
+  </Folder>
 </Solution>
