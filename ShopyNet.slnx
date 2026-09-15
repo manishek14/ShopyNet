@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Shop.Application/Shop.Application.csproj" />
+  <Project Path="Shop.Domain/Shop.Domain.csproj" />
+  <Project Path="Shop.Infrastructure/Shop.Infrastructure.csproj" />
+  <Project Path="Shop.Presentation.Facade/Shop.Presentation.Facade.csproj" />
+  <Project Path="Shop.Query/Shop.Query.csproj" />
+</Solution>
