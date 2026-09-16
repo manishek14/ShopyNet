@@ -54,7 +54,7 @@ namespace Shop.Domain.UserAgg
         }
         public void AddAddress(UserAddress address)
         {
-            address.UserID = Id;
+            address.UserId = Id;
             UserAddresses.Add(address);
         }
         public void EditAddress(UserAddress address)
