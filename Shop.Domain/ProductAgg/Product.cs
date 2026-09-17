@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Shop.Domain.ProductAgg
 {
-    public class Product
+    public class Product : BaseAggregate
     {
         public Product(string title, string imageName, string description, Guid categoryId, Guid subCategoryId, Guid nestedCategoryId, string slug, SeoData seoData)
         {
