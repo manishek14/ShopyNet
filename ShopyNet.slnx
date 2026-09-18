@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Common/">
+    <Project Path="Common/Common.Aplication/Common.Aplication.csproj" Id="b09ed1ab-f128-473a-bf7f-3a409d5c2ee4" />
     <Project Path="Common/Common.Domain/Common.Domain.csproj" />
   </Folder>
   <Folder Name="/Shop/">
