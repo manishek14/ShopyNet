@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Category\Edit\" />
-    <Folder Include="Category\AddChild\" />
-    <Folder Include="Comment\Edit\" />
-    <Folder Include="Comment\ChangeStatus\" />
     <Folder Include="Order\AddItem\" />
     <Folder Include="Order\IncreaseItemCount\" />
     <Folder Include="Order\DecreaseItemCount\" />
@@ -38,6 +34,12 @@
     <Folder Include="User\SetRoles\" />
     <Folder Include="User\RemoveAddress\" />
     <Folder Include="User\Register\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.Aplication\Common.Aplication.csproj" />
+    <ProjectReference Include="..\Common\Common.Domain\Common.Domain.csproj" />
+    <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
   </ItemGroup>
 
 </Project>
