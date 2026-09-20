@@ -1,200 +1,65 @@
-﻿using Microsoft.AspNetCore.Http;
-using Common.Aplication.FileUtil;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Shop.Application._Utilities
+﻿namespace Shop.Application._Utilities
 {
-    public class Directories : IDirectories
+    public static class Directories
     {
-        public void CreateDirectory(string directoryPath)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                throw new ArgumentException("Directory path is required.", nameof(directoryPath));
+        public const string ProductImages = "images/products";
+        public const string ProductGallery = "images/products/gallery";
+        public const string ProductThumbnails = "images/products/thumbnails";
 
-            var folderName = GetFullPath(directoryPath);
+        public const string CategoryImages = "images/categories";
+        public const string CategoryIcons = "images/categories/icons";
+        public const string CategoryBanners = "images/categories/banners";
 
-            if (!Directory.Exists(folderName))
-                Directory.CreateDirectory(folderName);
-        }
+        public const string UserAvatars = "images/users/avatars";
+        public const string UserDocuments = "documents/users";
 
-        public bool DirectoryExists(string directoryPath)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                return false;
+        public const string BannerImages = "images/banners";
+        public const string SliderImages = "images/sliders";
+        public const string AdvertisementImages = "images/advertisements";
 
-            var folderName = GetFullPath(directoryPath);
-            return Directory.Exists(folderName);
-        }
+        public const string BlogImages = "images/blog";
+        public const string BlogThumbnails = "images/blog/thumbnails";
+        public const string BlogAuthorAvatars = "images/blog/authors";
 
-        public void DeleteDirectory(string directoryPath)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                return;
+        public const string CommentImages = "images/comments";
 
-            var folderName = GetFullPath(directoryPath);
+        public const string BrandLogos = "images/brands";
+        public const string BrandBanners = "images/brands/banners";
 
-            if (Directory.Exists(folderName))
-                Directory.Delete(folderName, recursive: true);
-        }
+        public const string RoleIcons = "images/roles";
 
-        public void ClearDirectory(string directoryPath)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                return;
+        public const string SellerLogos = "images/sellers/logos";
+        public const string SellerBanners = "images/sellers/banners";
+        public const string SellerDocuments = "documents/sellers";
 
-            var folderName = GetFullPath(directoryPath);
+        public const string OrderInvoices = "documents/orders/invoices";
+        public const string OrderAttachments = "documents/orders/attachments";
 
-            if (!Directory.Exists(folderName))
-                return;
+        public const string SiteLogo = "images/site/logo";
+        public const string SiteFavicon = "images/site/favicon";
+        public const string SiteBackgrounds = "images/site/backgrounds";
 
-            foreach (var file in Directory.GetFiles(folderName))
-                File.Delete(file);
+        public const string PageImages = "images/pages";
+        public const string PageBanners = "images/pages/banners";
 
-            foreach (var directory in Directory.GetDirectories(folderName))
-                Directory.Delete(directory, recursive: true);
-        }
+        public const string DiscountBanners = "images/discounts";
 
-        public async Task SaveFile(IFormFile file, string directoryPath)
-        {
-            if (file == null)
-                throw new InvalidDataException("File is null.");
+        public const string ReportFiles = "documents/reports";
+        public const string ExportFiles = "documents/exports";
 
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                throw new ArgumentException("Directory path is required.", nameof(directoryPath));
+        public const string TempFiles = "temp";
+        public const string Uploads = "uploads";
 
-            if (!file.IsValidFile())
-                throw new InvalidDataException("File type is not allowed.");
+        public static string ProductImagesById(Guid productId)
+            => $"{ProductImages}/{productId}";
 
-            var fileName = file.FileName;
+        public static string CategoryImagesById(Guid categoryId)
+            => $"{CategoryImages}/{categoryId}";
 
-            var folderName = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                directoryPath.Replace("/", "\\")
-            );
+        public static string UserAvatarsById(Guid userId)
+            => $"{UserAvatars}/{userId}";
 
-            if (!Directory.Exists(folderName))
-                Directory.CreateDirectory(folderName);
-
-            var path = Path.Combine(folderName, fileName);
-
-            using var stream = new FileStream(path, FileMode.Create);
-            await file.CopyToAsync(stream);
-        }
-
-        public async Task<string> SaveFileAndGenerateName(IFormFile file, string directoryPath)
-        {
-            if (file == null)
-                throw new InvalidDataException("File is null.");
-
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                throw new ArgumentException("Directory path is required.", nameof(directoryPath));
-
-            if (!file.IsValidFile())
-                throw new InvalidDataException("File type is not allowed.");
-
-            var fileName = Guid.NewGuid() + DateTime.Now.TimeOfDay.ToString()
-                .Replace(":", "")
-                .Replace(".", "") + Path.GetExtension(file.FileName);
-
-            var folderName = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                directoryPath.Replace("/", "\\")
-            );
-
-            if (!Directory.Exists(folderName))
-                Directory.CreateDirectory(folderName);
-
-            var path = Path.Combine(folderName, fileName);
-
-            using var stream = new FileStream(path, FileMode.Create);
-            await file.CopyToAsync(stream);
-
-            return fileName;
-        }
-
-        public void DeleteFile(string path, string fileName)
-        {
-            if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(fileName))
-                return;
-
-            var filePath = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                path.Replace("/", "\\"),
-                fileName
-            );
-
-            if (File.Exists(filePath))
-                File.Delete(filePath);
-        }
-
-        public void DeleteFile(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-                return;
-
-            if (File.Exists(filePath))
-                File.Delete(filePath);
-        }
-
-        public List<string> GetFiles(string directoryPath)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                return new List<string>();
-
-            var folderName = GetFullPath(directoryPath);
-
-            if (!Directory.Exists(folderName))
-                return new List<string>();
-
-            return Directory.GetFiles(folderName).ToList();
-        }
-
-        public List<string> GetDirectories(string directoryPath)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                return new List<string>();
-
-            var folderName = GetFullPath(directoryPath);
-
-            if (!Directory.Exists(folderName))
-                return new List<string>();
-
-            return Directory.GetDirectories(folderName).ToList();
-        }
-
-        public string GetFullPath(string relativePath)
-        {
-            if (string.IsNullOrWhiteSpace(relativePath))
-                throw new ArgumentException("Relative path is required.", nameof(relativePath));
-
-            var cleanedPath = relativePath
-                .TrimStart('/', '\\')
-                .Replace("/", "\\");
-
-            return Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "wwwroot",
-                cleanedPath
-            );
-        }
-
-        public long GetDirectorySize(string directoryPath)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-                return 0;
-
-            var folderName = GetFullPath(directoryPath);
-
-            if (!Directory.Exists(folderName))
-                return 0;
-
-            var directoryInfo = new DirectoryInfo(folderName);
-            return directoryInfo.EnumerateFiles("*", SearchOption.AllDirectories)
-                .Sum(file => file.Length);
-        }
+        public static string BlogImagesById(Guid blogId)
+            => $"{BlogImages}/{blogId}";
     }
 }
