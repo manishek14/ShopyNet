@@ -6,4 +6,34 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Order\AddItem\" />
+    <Folder Include="Order\IncreaseItemCount\" />
+    <Folder Include="Order\DecreaseItemCount\" />
+    <Folder Include="Order\ApplyDiscount\" />
+    <Folder Include="Order\RemoveDiscount\" />
+    <Folder Include="Order\SetShippingMethod\" />
+    <Folder Include="Order\SetAddress\" />
+    <Folder Include="Order\RemoveItem\" />
+    <Folder Include="Product\Edit\" />
+    <Folder Include="Product\AddImage\" />
+    <Folder Include="Product\AddSpecification\" />
+    <Folder Include="Product\RemoveImage\" />
+    <Folder Include="Seller\ChangeStatus\" />
+    <Folder Include="Seller\Edit\" />
+    <Folder Include="Seller\AddInventory\" />
+    <Folder Include="Seller\EditInventory\" />
+    <Folder Include="Seller\RemoveInventory\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.Aplication\Common.Aplication.csproj" />
+    <ProjectReference Include="..\Common\Common.Domain\Common.Domain.csproj" />
+    <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
