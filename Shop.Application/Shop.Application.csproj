@@ -19,21 +19,15 @@
     <Folder Include="Product\AddImage\" />
     <Folder Include="Product\AddSpecification\" />
     <Folder Include="Product\RemoveImage\" />
-    <Folder Include="Role\Edit\" />
-    <Folder Include="Role\AddPermission\" />
-    <Folder Include="Role\RemovePermission\" />
-    <Folder Include="Role\SetPermission\" />
     <Folder Include="Seller\ChangeStatus\" />
     <Folder Include="Seller\Edit\" />
     <Folder Include="Seller\AddInventory\" />
     <Folder Include="Seller\EditInventory\" />
     <Folder Include="Seller\RemoveInventory\" />
-    <Folder Include="User\AddAddress\" />
-    <Folder Include="User\EditAddress\" />
-    <Folder Include="User\ChargeWallet\" />
-    <Folder Include="User\SetRoles\" />
-    <Folder Include="User\RemoveAddress\" />
-    <Folder Include="User\Register\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.12" />
   </ItemGroup>
 
   <ItemGroup>
