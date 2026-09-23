@@ -17,7 +17,6 @@ namespace Shop.Query.Category.GetById
 
         public async Task<CategoryDto> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            // Use SingleOrDefaultAsync to ensure the query uses EF Core async with cancellation support
             var id = request.Id;
             var category = await _shopContext.Categories
                 .SingleOrDefaultAsync(c => c.Id == id, cancellationToken);
