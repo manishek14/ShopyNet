@@ -1,8 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shop.Infrastructure.Persistent.Dapper;
+using Shop.Domain.CategoryAgg;
+using Shop.Domain.CommentAgg;
+using Shop.Domain.OrderAgg;
+using Shop.Domain.OrderAgg.Repositories;
+using Shop.Domain.ProductAgg;
+using Shop.Domain.RoleAgg;
+using Shop.Domain.SellerAgg;
+using Shop.Domain.UserAgg;
 using Shop.Infrastructure.Persistent.Ef;
+using Shop.Infrastructure.Persistent.Ef.CategoryAgg;
+using Shop.Infrastructure.Persistent.Ef.CommentAgg;
+using Shop.Infrastructure.Persistent.Ef.OrderAgg;
+using Shop.Infrastructure.Persistent.Ef.ProductAgg;
+using Shop.Infrastructure.Persistent.Ef.RoleAgg;
+using Shop.Infrastructure.Persistent.Ef.SellerAgg;
+using Shop.Infrastructure.Persistent.Ef.UserAgg;
 using System;
 
 namespace Shop.Infrastructure
@@ -18,15 +32,14 @@ namespace Shop.Infrastructure
                 contextLifetime: ServiceLifetime.Transient,
                 optionsLifetime: ServiceLifetime.Transient);
 
-            // Register Dapper context and DbContext
-            services.AddTransient<DapperContext>(provider => new DapperContext(connectionString));
-            services.AddTransient<ShopContext>(options =>
-            {
-                var dbContextOptions = new DbContextOptionsBuilder<ShopContext>()
-                    .UseSqlServer(connectionString)
-                    .Options;
-                return new ShopContext(dbContextOptions);
-            });
+            // Register repositories as Transient
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<ISellerRepository, SellerRepository>();
         }
     }
 }

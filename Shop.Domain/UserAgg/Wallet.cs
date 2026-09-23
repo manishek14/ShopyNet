@@ -94,5 +94,16 @@ namespace Shop.Domain.UserAgg
                 if (!Enum.IsDefined(typeof(WalletType), Type))
                     throw new InvalidDataException("Wallet type is not valid!");
         }
+
+        public void AssignToUser(Guid userId)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("userId cannot be empty!", nameof(userId));
+
+            if (UserId != Guid.Empty)
+                throw new InvalidOperationException("Wallet is already assigned to a user!");
+
+            UserId = userId;
+        }
     }
 }

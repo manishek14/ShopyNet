@@ -6,6 +6,6 @@ namespace Shop.Domain.UserAgg.Enums
 {
     public class Gender
     {
-        public Gender None { get; internal set; }
+        public Gender? None { get; internal set; }
     }
 }
