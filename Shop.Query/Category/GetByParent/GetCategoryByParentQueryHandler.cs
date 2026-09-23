@@ -1,6 +1,10 @@
-﻿using Shop.Infrastructure.Persistent.Ef;
-using Shop.Query.Category.DTOs;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Shop.Infrastructure.Persistent.Ef;
+using Shop.Query.Category.DTOs;
 
 namespace Shop.Query.Category.GetByParent
 {
@@ -15,8 +19,9 @@ namespace Shop.Query.Category.GetByParent
 
         public async Task<List<CategoryWithParentDto>> Handle(GetCategoryByParentQuery request, CancellationToken cancellationToken)
         {
+            var parentId = request.ParentId;
             var categories = await _shopContext.Categories
-                .Where(c => c.ParentID == request.ParentId)
+                .Where(c => c.ParentID == parentId)
                 .ToListAsync(cancellationToken);
 
             return CategoryMapper.SubParentMap(categories);

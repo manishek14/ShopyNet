@@ -1,4 +1,7 @@
-﻿using Shop.Infrastructure.Persistent.Ef;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Shop.Infrastructure.Persistent.Ef;
 using Shop.Query.Category.DTOs;
 
 namespace Shop.Query.Category.GetById
@@ -14,7 +17,11 @@ namespace Shop.Query.Category.GetById
 
         public async Task<CategoryDto> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            var category = await _shopContext.Categories.FindAsync(request.Id);
+            // Use SingleOrDefaultAsync to ensure the query uses EF Core async with cancellation support
+            var id = request.Id;
+            var category = await _shopContext.Categories
+                .SingleOrDefaultAsync(c => c.Id == id, cancellationToken);
+
             return category.Map();
         }
     }
