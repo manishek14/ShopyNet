@@ -2,6 +2,7 @@
   <Folder Name="/Common/">
     <Project Path="Common/Common.Aplication/Common.Aplication.csproj" Id="b09ed1ab-f128-473a-bf7f-3a409d5c2ee4" />
     <Project Path="Common/Common.Domain/Common.Domain.csproj" />
+    <Project Path="Common/Common.Query/Common.Query.csproj" Id="68215355-5a59-4306-a4b1-2333d5beaf57" />
   </Folder>
   <Folder Name="/Shop/">
     <Project Path="Shop.Application/Shop.Application.csproj" />
