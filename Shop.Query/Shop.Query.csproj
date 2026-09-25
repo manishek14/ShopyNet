@@ -14,8 +14,6 @@
     <Folder Include="User\" />
     <Folder Include="Seller\" />
     <Folder Include="Role\" />
-    <Folder Include="Product\" />
-    <Folder Include="Order\" />
   </ItemGroup>
 
   <ItemGroup>
