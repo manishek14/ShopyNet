@@ -14,6 +14,8 @@ namespace Shop.Infrastructure.Persistent.Ef
 {
     public class ShopContext : DbContext
     {
+        public readonly object Wallets;
+
         public ShopContext(DbContextOptions<ShopContext> options) : base(options)
         {
             
