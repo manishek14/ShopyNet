@@ -9,7 +9,7 @@ namespace Shop.Query.User.DTOs
         public string? Family { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
-        public Gender? Gender { get; set; }
+        public Gender? Gender { get; set; }  
         public bool? IsActive { get; set; }
     }
 }

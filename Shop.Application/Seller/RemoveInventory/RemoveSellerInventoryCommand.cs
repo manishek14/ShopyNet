@@ -1,6 +1,6 @@
 ﻿using Common.Aplication;
 using Common.Application;
-using Shop.Domain.SellerAgg.Repository;
+using Shop.Domain.SellerAgg;
 using System;
 using System.Linq;
 using System.Threading;

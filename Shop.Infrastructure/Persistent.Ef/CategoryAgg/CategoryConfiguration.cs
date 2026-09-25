@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shop.Domain.CategoryAgg;
-using Shop.Domain.Shared;
+using Common.Domain.ValueObject;
 
 namespace Shop.Infrastructure.Persistent.Ef.CategoryAgg
 {

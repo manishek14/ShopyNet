@@ -2,8 +2,7 @@
 using Common.Application;
 using Common.Domain.ValueObject;
 using Microsoft.AspNetCore.Http;
-using Shop.Domain.ProductAgg.Repository;
-using Shop.Domain.ProductAgg.Services;
+using Shop.Domain.ProductAgg;
 using System;
 using System.Collections.Generic;
 using System.Linq;

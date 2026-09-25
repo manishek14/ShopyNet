@@ -71,7 +71,8 @@ namespace Shop.Query.Order.GetByFilter
                 FilterParam = filterParams
             };
 
-            result.GeneratePaging(query, filterParams.Limit, filterParams.PageId);
+            var total = await query.CountAsync(cancellationToken);
+            result.GeneratePaging(total, filterParams.Limit, filterParams.PageId);
 
             return result;
         }

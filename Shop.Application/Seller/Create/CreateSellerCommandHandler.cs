@@ -21,11 +21,7 @@ namespace Shop.Application.Sellers.Create
             var seller = new Domain.SellerAgg.Seller(
                 request.UserId,
                 request.ShopName,
-                request.NationalCode,
-                SellerStatus.Pending,
-                new List<SellerInventory>(),
-                DateTime.Now,
-                DateTime.Now
+                request.NationalCode
             );
 
             await _sellerRepository.AddAsync(seller, cancellationToken);
