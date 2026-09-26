@@ -7,14 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Order\AddItem\" />
-    <Folder Include="Order\IncreaseItemCount\" />
-    <Folder Include="Order\DecreaseItemCount\" />
-    <Folder Include="Order\ApplyDiscount\" />
-    <Folder Include="Order\RemoveDiscount\" />
-    <Folder Include="Order\SetShippingMethod\" />
-    <Folder Include="Order\SetAddress\" />
-    <Folder Include="Order\RemoveItem\" />
     <Folder Include="Product\AddSpecification\" />
   </ItemGroup>
 
@@ -25,7 +17,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.Aplication\Common.Aplication.csproj" />
     <ProjectReference Include="..\Common\Common.Domain\Common.Domain.csproj" />
+    <ProjectReference Include="..\Common\Common.Query\Common.Query.csproj" />
     <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
+    <ProjectReference Include="..\Shop.Query\Shop.Query.csproj" />
   </ItemGroup>
 
 </Project>
