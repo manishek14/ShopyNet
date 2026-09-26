@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Application._Utilities;
 using Shop.Domain.CategoryAgg.Services;
@@ -36,11 +37,13 @@ namespace Shop.Config
                 )
             );
 
+            services.AddValidatorsFromAssembly(typeof(Directories).Assembly);
+
             RegisterDomainServices(services);
         }
 
         // Domain Service
-        private static void RegisterDomainServices(IServiceCollection services)
+        public static void RegisterDomainServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Directories).Assembly);
 
