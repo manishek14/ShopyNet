@@ -10,5 +10,9 @@
     <Project Path="Shop.Infrastructure/Shop.Infrastructure.csproj" />
     <Project Path="Shop.Presentation.Facade/Shop.Presentation.Facade.csproj" />
     <Project Path="Shop.Query/Shop.Query.csproj" />
+    <Project Path="Shop/Shop.Config/Shop.Config.csproj" Id="b403079e-3c99-4ac2-831a-ab596b0742fc" />
+  </Folder>
+  <Folder Name="/Shop/EndPoints/">
+    <Project Path="Shop/EndPoints/Shop.Api/Shop.Api.csproj" Id="e8787b7b-eeb4-4bf2-80e4-421024cf81c5" />
   </Folder>
 </Solution>

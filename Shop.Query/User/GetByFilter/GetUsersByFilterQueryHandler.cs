@@ -46,9 +46,9 @@ namespace Shop.Query.User.GetByFilter
                 query = query.Where(u => u.PhoneNumber == filterParams.PhoneNumber);
             }
 
-            if (filterParams.Gender.HasValue)
+            if (filterParams.Gender != null)
             {
-                query = query.Where(u => u.Gender == filterParams.Gender.Value);
+                query = query.Where(u => u.Gender == filterParams.Gender);
             }
 
             if (filterParams.IsActive.HasValue)
@@ -70,7 +70,8 @@ namespace Shop.Query.User.GetByFilter
                 FilterParam = filterParams
             };
 
-            result.GeneratePaging(query, filterParams.Limit, filterParams.PageId);
+            var total = await query.CountAsync(cancellationToken);
+            result.GeneratePaging(total, filterParams.Limit, filterParams.PageId);
 
             return result;
         }
