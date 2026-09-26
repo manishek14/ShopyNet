@@ -1,6 +1,6 @@
 ﻿using Common.Aplication;
 using Common.Application;
-using Shop.Domain.OrderAgg.Repository;
+using Shop.Domain.OrderAgg.Repositories;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

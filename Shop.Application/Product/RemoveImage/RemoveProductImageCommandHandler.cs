@@ -2,6 +2,7 @@
 using Common.Application.Validation;
 using Shop.Application._Utilities;
 using Shop.Domain.ProductAgg;
+using Shop.Domain.ProductAgg.Repository;
 
 namespace Shop.Application.Products.RemoveImage
 {
