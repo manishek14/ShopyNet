@@ -1,8 +1,8 @@
 ﻿using Shop.Domain.OrderAgg;
 using Shop.Domain.OrderAgg.Enums;
 using Shop.Domain.OrderAgg.Repositories;
-using Shop.Domain.OrderAgg.Repository;
 using Shop.Domain.OrderAgg.Services;
+using Shop.Domain.ProductAgg.Repository;
 using Shop.Domain.ProductAgg;
 using Shop.Domain.ProductAgg.Repository;
 using System;

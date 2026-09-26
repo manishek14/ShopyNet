@@ -1,5 +1,6 @@
 ﻿using Shop.Domain.ProductAgg;
 using Shop.Domain.SellerAgg;
+using Shop.Domain.ProductAgg.Repository;
 using Shop.Domain.SellerAgg.Services;
 using Shop.Domain.UserAgg.Repository;
 using System;

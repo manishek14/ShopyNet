@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shop.Domain.OrderAgg.Repository
+namespace Shop.Domain.OrderAgg.Repositories
 {
     public interface IOrderRepository : IBaseRepository<Order>
     {

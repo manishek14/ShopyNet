@@ -1,4 +1,5 @@
 ﻿using Shop.Domain.ProductAgg;
+using Shop.Domain.ProductAgg.Repository;
 using Shop.Domain.ProductAgg.Services;
 using System;
 using System.Threading;

@@ -1,6 +1,8 @@
 ﻿using Shop.Domain.CommentAgg;
+using Shop.Domain.ProductAgg.Repository;
 using Shop.Domain.CommentAgg.Services;
 using Shop.Domain.ProductAgg;
+using Shop.Domain.ProductAgg.Repository;
 using Shop.Domain.UserAgg.Repository;
 using System;
 using System.Threading;

@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Shop.Application._Utilities;
 using Shop.Domain.ProductAgg;
+using Shop.Domain.ProductAgg.Repository;
 
 namespace Shop.Application.Products.Create
 {

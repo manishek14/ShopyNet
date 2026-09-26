@@ -9,6 +9,7 @@ using Shop.Domain.OrderAgg;
 using Shop.Domain.OrderAgg.Repositories;
 using Shop.Domain.OrderAgg.Services;
 using Shop.Domain.ProductAgg;
+using Shop.Domain.ProductAgg.Repository;
 using Shop.Domain.ProductAgg.Services;
 using Shop.Domain.RoleAgg;
 using Shop.Domain.RoleAgg.Services;
