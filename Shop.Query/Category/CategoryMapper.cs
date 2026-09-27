@@ -19,7 +19,7 @@ namespace Shop.Query.Category
                 Title = category.Title,
                 Slug = category.Slug,
                 SeoData = category.SeoData,
-                ParentID = category.ParentID,
+                ParentID = category.ParentId,
                 CreatedDate = category.CreationDate
             };
         }
@@ -38,7 +38,7 @@ namespace Shop.Query.Category
                     Title = category.Title,
                     Slug = category.Slug,
                     SeoData = category.SeoData,
-                    ParentID = category.ParentID,
+                    ParentID = category.ParentId,
                     Childs = category.Childs?.Select(c => Map(c)).Where(d => d != null).Select(d => (CategoryDto)d!).ToList() ?? new List<CategoryDto>(),
                     CreatedDate = category.CreationDate
                 });
@@ -61,7 +61,7 @@ namespace Shop.Query.Category
                     Title = category.Title,
                     Slug = category.Slug,
                     SeoData = category.SeoData,
-                    ParentID = category.ParentID,
+                    ParentID = category.ParentId,
                     CreatedDate = category.CreationDate
                 });
             }

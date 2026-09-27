@@ -1,6 +1,6 @@
 ﻿using Common.Aplication;
 using Common.Application.Validation;
-using Shop.Domain.UserAgg;
+using Shop.Domain.UserAgg.Repository;
 
 namespace Shop.Application.User.RemoveAddress
 {

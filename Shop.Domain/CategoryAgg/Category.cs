@@ -1,49 +1,60 @@
 ﻿using Common.Domain;
 using Common.Domain.ValueObject;
+using Shop.Domain.UserAgg;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Shop.Domain.CategoryAgg
 {
     public class Category : BaseAggregate
     {
+        // EF Core
+        protected Category() { }
+
         public Category(string title, string slug, SeoData seoData)
         {
-            GuardForNullOrEmpty();
+            Guard(title, slug, seoData);
+
             Title = title;
-            Slug = string.IsNullOrWhiteSpace(slug) ? Slugifier.Slugify(title) : Slugifier.Slugify(slug);
+            Slug = string.IsNullOrWhiteSpace(slug)
+                ? Slugifier.Slugify(title)
+                : Slugifier.Slugify(slug);
             SeoData = seoData;
+            Childs = new List<Category>();
         }
 
-        public string Title { get; private set; }
-        public string Slug { get; private set; }
-        public SeoData SeoData { get; private set; }
-        public Guid? ParentID { get; private set; }
-        public List<Category> Childs { get; private set; }
+        public string Title { get; private set; } = string.Empty;
+        public string Slug { get; private set; } = string.Empty;
+        public SeoData SeoData { get; private set; } = null!;
+        public Guid? ParentId { get; private set; }
+        public List<Category> Childs { get; private set; } = new();
 
         public void Edit(string title, string slug, SeoData seoData)
         {
+            Guard(title, slug, seoData);
+
             Title = title;
-            Slug = string.IsNullOrWhiteSpace(slug) ? Slugifier.Slugify(title) : Slugifier.Slugify(slug);
+            Slug = string.IsNullOrWhiteSpace(slug)
+                ? Slugifier.Slugify(title)
+                : Slugifier.Slugify(slug);
             SeoData = seoData;
         }
 
         public void AddChild(string title, string slug, SeoData seoData)
         {
-            Childs.Add(new Category(title, slug, seoData) {
-                ParentID = Id 
+            Childs.Add(new Category(title, slug, seoData)
+            {
+                ParentId = Id
             });
         }
 
-        public void GuardForNullOrEmpty()
+        private static void Guard(string title, string slug, SeoData seoData)
         {
-            if (string.IsNullOrEmpty(Title))
-                throw new ArgumentException("Title cannot be null or empty!");
-            if (string.IsNullOrEmpty(Slug))
-                throw new ArgumentException("Slug cannot be null or empty!");
-            if (SeoData == null)
-                throw new ArgumentException("SeoData cannot be null!");
+            NullOrEmptyDomainDataException.CheckString(title, nameof(title));
+            NullOrEmptyDomainDataException.CheckString(slug, nameof(slug));
+
+            if (seoData == null)
+                throw new NullOrEmptyDomainDataException("SeoData cannot be null.");
         }
     }
 }

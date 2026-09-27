@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Infrastructure._Utilities
 {
-    internal class BaseRepository<TEntity> : IBaseRepository<TEntity>
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity> 
         where TEntity : BaseEntity
     {
         private readonly ShopContext _shopContext;

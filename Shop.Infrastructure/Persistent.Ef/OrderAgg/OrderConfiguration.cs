@@ -25,7 +25,7 @@ namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
                 .HasDefaultValueSql("GETDATE()");
 
             builder.Property(o => o.FinallyAt)
-                .IsRequired(false);
+                .IsRequired();
 
             builder.HasMany(o => o.Items)
                 .WithOne()
@@ -37,11 +37,11 @@ namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
                 discount.Property(d => d.DiscountTitle)
                     .HasColumnName("DiscountTitle")
                     .HasMaxLength(200)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 discount.Property(d => d.DiscountAmount)
                     .HasColumnName("DiscountAmount")
-                    .IsRequired(false);
+                    .IsRequired();
             });
 
             builder.OwnsOne(o => o.Address, address =>
@@ -49,42 +49,42 @@ namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
                 address.Property(a => a.Province)
                     .HasColumnName("Province")
                     .HasMaxLength(100)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 address.Property(a => a.City)
                     .HasColumnName("City")
                     .HasMaxLength(100)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 address.Property(a => a.PostalCode)
                     .HasColumnName("PostalCode")
                     .HasMaxLength(10)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 address.Property(a => a.MailingAddress)
                     .HasColumnName("MailingAddress")
                     .HasMaxLength(500)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 address.Property(a => a.PhoneNumber)
                     .HasColumnName("PhoneNumber")
                     .HasMaxLength(11)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 address.Property(a => a.Name)
                     .HasColumnName("Name")
                     .HasMaxLength(100)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 address.Property(a => a.Family)
                     .HasColumnName("Family")
                     .HasMaxLength(100)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 address.Property(a => a.NationalCode)
                     .HasColumnName("NationalCode")
                     .HasMaxLength(10)
-                    .IsRequired(false);
+                    .IsRequired();
             });
 
             builder.OwnsOne(o => o.ShippingMethod, shipping =>
@@ -92,11 +92,11 @@ namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
                 shipping.Property(s => s.ShippingType)
                     .HasColumnName("ShippingType")
                     .HasMaxLength(100)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 shipping.Property(s => s.ShippingCost)
                     .HasColumnName("ShippingCost")
-                    .IsRequired(false);
+                    .IsRequired();
             });
 
             builder.HasIndex(o => o.UserId)

@@ -21,7 +21,7 @@ namespace Shop.Query.Category.GetList
         public async Task<List<CategoryWithChildsDto>> Handle(GetCategoriesListQuery request, CancellationToken cancellationToken)
         {
             var categories = await _shopContext.Categories
-                .Where(c => c.ParentID == null)
+                .Where(c => c.ParentId == null)
                 .ToListAsync(cancellationToken);
 
             return CategoryMapper.SubMap(categories);

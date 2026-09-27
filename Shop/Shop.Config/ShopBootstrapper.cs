@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using Common.Aplication.FileUtil.Interfaces;
+using Common.Aplication.FileUtil.Services;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Application._Utilities;
@@ -29,24 +31,24 @@ namespace Shop.Config
             // Infrastructure
             InfrastructureBootstrapper.Init(services, connectionString);
 
-            // MediatR 
+            // MediatR
             services.AddMediatR(cfg =>
                 cfg.RegisterServicesFromAssemblies(
-                    typeof(Directories).Assembly, 
-                    typeof(Shop.Query.IBaseQuery<>).Assembly  
+                    typeof(Directories).Assembly,
+                    typeof(Shop.Query.IBaseQuery<>).Assembly
                 )
             );
 
+            // FluentValidation
             services.AddValidatorsFromAssembly(typeof(Directories).Assembly);
 
+            services.AddScoped<IFileService, FileService>();
+            // Domain Serviceها
             RegisterDomainServices(services);
         }
 
-        // Domain Service
         public static void RegisterDomainServices(IServiceCollection services)
         {
-            services.AddMediatR(typeof(Directories).Assembly);
-
             services.AddScoped<IDomainUserService, DomainUserService>();
             services.AddScoped<IProductDomainService, ProductDomainService>();
             services.AddScoped<IOrderDomainService, OrderDomainService>();
@@ -55,6 +57,5 @@ namespace Shop.Config
             services.AddScoped<ICategoryDomainService, CategoryDomainService>();
             services.AddScoped<ICommentDomainService, CommentDomainService>();
         }
-
     }
 }

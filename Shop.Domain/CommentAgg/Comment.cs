@@ -10,7 +10,7 @@ namespace Shop.Domain.CommentAgg
     {
         public Guid UserId { get; private set; }
         public Guid ProductId { get; private set; }
-        public Guid ReplyId { get; private set; }
+        public Guid? ReplyId { get; private set; }
         public string content { get; private set; }
         public CommentStatus status { get; private set; }
         public DateTime CreatedAt { get; private set; }

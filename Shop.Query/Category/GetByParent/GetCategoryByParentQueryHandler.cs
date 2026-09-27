@@ -21,7 +21,7 @@ namespace Shop.Query.Category.GetByParent
         {
             var parentId = request.ParentId;
             var categories = await _shopContext.Categories
-                .Where(c => c.ParentID == parentId)
+                .Where(c => c.ParentId == parentId)
                 .ToListAsync(cancellationToken);
 
             return CategoryMapper.SubParentMap(categories);
