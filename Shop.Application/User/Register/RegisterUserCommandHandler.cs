@@ -1,5 +1,5 @@
 ﻿using Common.Aplication;
-using Shop.Domain.UserAgg;
+using Shop.Domain.UserAgg.Repository;
 using Shop.Domain.UserAgg.Service;
 
 namespace Shop.Application.User.Register

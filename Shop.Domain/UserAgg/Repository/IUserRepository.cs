@@ -1,21 +1,11 @@
-﻿using System;
+﻿using Clean_Arch.Query.Shared.Repository;
+using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Text;
 
 namespace Shop.Domain.UserAgg.Repository
 {
-    public interface IUserRepository
+    public interface IUserRepository : IBaseRepository<User>
     {
-        User GetById(Guid id);
-        User GetByPhoneNumber(string phoneNumber);
-        User GetByEmail(string email);
-        List<User> GetAll();
-
-        void Add(User user);
-        void Update(User user);
-        void Delete(User user);
-
-        bool Exists(Expression<Func<User, bool>> predicate);
-        void SaveChanges();
     }
 }

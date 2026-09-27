@@ -2,6 +2,7 @@
 using Common.Application;
 using Common.Application.Validation;
 using Shop.Domain.UserAgg;
+using Shop.Domain.UserAgg.Repository;
 using System;
 using System.Linq;
 using System.Threading;
@@ -11,9 +12,9 @@ namespace Shop.Application.User.SetRoles
 {
     public class SetUserRolesCommandHandler : IBaseCommandHandler<SetUserRolesCommand>
     {
-        private readonly Shop.Domain.UserAgg.IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public SetUserRolesCommandHandler(Shop.Domain.UserAgg.IUserRepository userRepository)
+        public SetUserRolesCommandHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }

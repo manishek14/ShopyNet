@@ -1,6 +1,6 @@
 ﻿using Common.Aplication;
 using Common.Application.Validation;
-using Shop.Domain.UserAgg;
+using Shop.Domain.UserAgg.Repository;
 using Shop.Domain.UserAgg.Service;
 
 namespace Shop.Application.User.ChangePassword

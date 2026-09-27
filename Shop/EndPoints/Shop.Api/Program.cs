@@ -1,3 +1,5 @@
+using Common.Aplication.FileUtil.Interfaces;
+using Common.Aplication.FileUtil.Services;
 using Shop.Config;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.RegisterShopDependency(connectionString);
+builder.Services.AddTransient<IFileService, FileService>();
 ShopBootstrapper.RegisterDomainServices(builder.Services);
 var app = builder.Build();
 

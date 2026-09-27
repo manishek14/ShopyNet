@@ -1,8 +1,11 @@
-﻿namespace Common.Domain
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Common.Domain
 {
     public class BaseAggregate : BaseEntity
     {
         private readonly List<BaseDomainEvent> _domainEvents = new List<BaseDomainEvent>();
+        [NotMapped]
         public IReadOnlyList<BaseDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         public void AddDomainEvent(BaseDomainEvent domainEvent)

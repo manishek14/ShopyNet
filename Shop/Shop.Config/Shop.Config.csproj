@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="MediatR" Version="14.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.12" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.Aplication\Common.Aplication.csproj" />
     <ProjectReference Include="..\..\Shop.Application\Shop.Application.csproj" />
     <ProjectReference Include="..\..\Shop.Infrastructure\Shop.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Shop.Presentation.Facade\Shop.Presentation.Facade.csproj" />

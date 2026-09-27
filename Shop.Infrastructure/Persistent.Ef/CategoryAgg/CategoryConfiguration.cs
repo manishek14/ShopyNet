@@ -43,17 +43,17 @@ namespace Shop.Infrastructure.Persistent.Ef.CategoryAgg
                     .IsRequired(false);
             });
 
-            builder.Property(c => c.ParentID)
+            builder.Property(c => c.ParentId)
                 .IsRequired(false);
 
             builder.HasOne<Category>()
                 .WithMany()
-                .HasForeignKey(c => c.ParentID)
+                .HasForeignKey(c => c.ParentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(c => c.Childs)
                 .WithOne()
-                .HasForeignKey(c => c.ParentID)
+                .HasForeignKey(c => c.ParentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(c => c.Slug)
@@ -63,7 +63,7 @@ namespace Shop.Infrastructure.Persistent.Ef.CategoryAgg
             builder.HasIndex(c => c.Title)
                 .HasDatabaseName("IX_Categories_Title");
 
-            builder.HasIndex(c => c.ParentID)
+            builder.HasIndex(c => c.ParentId)
                 .HasDatabaseName("IX_Categories_ParentId");
         }
     }
