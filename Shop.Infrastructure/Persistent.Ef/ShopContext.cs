@@ -7,7 +7,7 @@ using Shop.Domain.RoleAgg;
 using Shop.Domain.SellerAgg;
 using Shop.Domain.UserAgg;
 
-// ✅ usingهای Configurationها (تضمینی)
+// ✅ Configurationها
 using Shop.Infrastructure.Persistent.Ef.CategoryAgg;
 using Shop.Infrastructure.Persistent.Ef.CommentAgg;
 using Shop.Infrastructure.Persistent.Ef.OrderAgg;
@@ -33,35 +33,64 @@ namespace Shop.Infrastructure.Persistent.Ef
             }
         }
 
+        // DbSets
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<ProductSpecification> ProductSpecifications { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Seller> Sellers { get; set; }
+        public DbSet<SellerInventory> SellerInventories { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
 
+        // Enums configuration
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Properties<Enum>().HaveConversion<int>();
         }
 
+        // Configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Gender 
             modelBuilder.Entity<User>()
                 .Property(u => u.Gender)
                 .HasConversion<int>();
 
+            // UserAgg
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new WalletConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAddressConfiguration());
+
+            // ProductAgg
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductSpecificationConfiguration());
+
+            // OrderAgg
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+
+            // CommentAgg
             modelBuilder.ApplyConfiguration(new CommentConfiguration());
+
+            // CategoryAgg
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+
+            // RoleAgg
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
+
+            // SellerAgg
             modelBuilder.ApplyConfiguration(new SellerConfiguration());
+            modelBuilder.ApplyConfiguration(new SellerInventoryConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
