@@ -202,7 +202,8 @@ namespace Shop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderItem",
+                name: "OrderItems",
+                schema: "Order",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -210,14 +211,14 @@ namespace Shop.Infrastructure.Migrations
                     InventoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItem", x => x.Id);
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderItem_Orders_OrderId",
+                        name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalSchema: "Order",
                         principalTable: "Orders",
@@ -226,20 +227,21 @@ namespace Shop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductImage",
+                name: "ProductImages",
+                schema: "Product",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ImageName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Sequence = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageName = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Sequence = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductImage", x => x.Id);
+                    table.PrimaryKey("PK_ProductImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductImage_Products_ProductId",
+                        name: "FK_ProductImages_Products_ProductId",
                         column: x => x.ProductId,
                         principalSchema: "Product",
                         principalTable: "Products",
@@ -248,20 +250,21 @@ namespace Shop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductSpecification",
+                name: "ProductSpecifications",
+                schema: "Product",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductSpecification", x => x.Id);
+                    table.PrimaryKey("PK_ProductSpecifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductSpecification_Products_ProductId",
+                        name: "FK_ProductSpecifications_Products_ProductId",
                         column: x => x.ProductId,
                         principalSchema: "Product",
                         principalTable: "Products",
@@ -270,7 +273,8 @@ namespace Shop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RolePermission",
+                name: "RolePermissions",
+                schema: "Role",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -280,9 +284,9 @@ namespace Shop.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RolePermission", x => x.Id);
+                    table.PrimaryKey("PK_RolePermissions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RolePermission_Roles_RoleId",
+                        name: "FK_RolePermissions_Roles_RoleId",
                         column: x => x.RoleId,
                         principalSchema: "Role",
                         principalTable: "Roles",
@@ -291,7 +295,8 @@ namespace Shop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SellerInventory",
+                name: "SellerInventories",
+                schema: "Seller",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -303,9 +308,9 @@ namespace Shop.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SellerInventory", x => x.Id);
+                    table.PrimaryKey("PK_SellerInventories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SellerInventory_Sellers_SellerId",
+                        name: "FK_SellerInventories_Sellers_SellerId",
                         column: x => x.SellerId,
                         principalSchema: "Seller",
                         principalTable: "Sellers",
@@ -315,20 +320,21 @@ namespace Shop.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserAddresses",
+                schema: "User",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MailingAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Family = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NationalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    MailingAddress = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Family = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    NationalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -346,6 +352,7 @@ namespace Shop.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserRoles",
+                schema: "User",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -367,15 +374,16 @@ namespace Shop.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Wallets",
+                schema: "User",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    IsFinally = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsFinally = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     FinallyAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -441,8 +449,15 @@ namespace Shop.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItem_OrderId",
-                table: "OrderItem",
+                name: "IX_OrderItems_InventoryId",
+                schema: "Order",
+                table: "OrderItems",
+                column: "InventoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_OrderId",
+                schema: "Order",
+                table: "OrderItems",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
@@ -464,9 +479,16 @@ namespace Shop.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductImage_ProductId",
-                table: "ProductImage",
+                name: "IX_ProductImages_ProductId",
+                schema: "Product",
+                table: "ProductImages",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductImages_ProductId_Sequence",
+                schema: "Product",
+                table: "ProductImages",
+                columns: new[] { "ProductId", "Sequence" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -512,14 +534,29 @@ namespace Shop.Infrastructure.Migrations
                 column: "Title");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductSpecification_ProductId",
-                table: "ProductSpecification",
+                name: "IX_ProductSpecifications_ProductId",
+                schema: "Product",
+                table: "ProductSpecifications",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RolePermission_RoleId",
-                table: "RolePermission",
+                name: "IX_ProductSpecifications_ProductId_Key",
+                schema: "Product",
+                table: "ProductSpecifications",
+                columns: new[] { "ProductId", "Key" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_RoleId",
+                schema: "Role",
+                table: "RolePermissions",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_RoleId_Permission",
+                schema: "Role",
+                table: "RolePermissions",
+                columns: new[] { "RoleId", "Permission" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Roles_CreatedAt",
@@ -535,9 +572,23 @@ namespace Shop.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SellerInventory_SellerId",
-                table: "SellerInventory",
+                name: "IX_SellerInventories_ProductId",
+                schema: "Seller",
+                table: "SellerInventories",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SellerInventories_SellerId",
+                schema: "Seller",
+                table: "SellerInventories",
                 column: "SellerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SellerInventories_SellerId_ProductId",
+                schema: "Seller",
+                table: "SellerInventories",
+                columns: new[] { "SellerId", "ProductId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sellers_NationalCode",
@@ -566,14 +617,35 @@ namespace Shop.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserAddresses_IsActive",
+                schema: "User",
+                table: "UserAddresses",
+                column: "IsActive");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserAddresses_UserId",
+                schema: "User",
                 table: "UserAddresses",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_RoleId",
+                schema: "User",
+                table: "UserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_UserId",
+                schema: "User",
                 table: "UserRoles",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_UserId_RoleId",
+                schema: "User",
+                table: "UserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
@@ -596,9 +668,40 @@ namespace Shop.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Wallets_CreatedAt",
+                schema: "User",
+                table: "Wallets",
+                column: "CreatedAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wallets_IsFinally",
+                schema: "User",
+                table: "Wallets",
+                column: "IsFinally");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wallets_Type",
+                schema: "User",
+                table: "Wallets",
+                column: "Type");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Wallets_UserId",
+                schema: "User",
                 table: "Wallets",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wallets_UserId_IsFinally",
+                schema: "User",
+                table: "Wallets",
+                columns: new[] { "UserId", "IsFinally" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wallets_UserId_Type",
+                schema: "User",
+                table: "Wallets",
+                columns: new[] { "UserId", "Type" });
         }
 
         /// <inheritdoc />
@@ -613,28 +716,36 @@ namespace Shop.Infrastructure.Migrations
                 schema: "Comment");
 
             migrationBuilder.DropTable(
-                name: "OrderItem");
+                name: "OrderItems",
+                schema: "Order");
 
             migrationBuilder.DropTable(
-                name: "ProductImage");
+                name: "ProductImages",
+                schema: "Product");
 
             migrationBuilder.DropTable(
-                name: "ProductSpecification");
+                name: "ProductSpecifications",
+                schema: "Product");
 
             migrationBuilder.DropTable(
-                name: "RolePermission");
+                name: "RolePermissions",
+                schema: "Role");
 
             migrationBuilder.DropTable(
-                name: "SellerInventory");
+                name: "SellerInventories",
+                schema: "Seller");
 
             migrationBuilder.DropTable(
-                name: "UserAddresses");
+                name: "UserAddresses",
+                schema: "User");
 
             migrationBuilder.DropTable(
-                name: "UserRoles");
+                name: "UserRoles",
+                schema: "User");
 
             migrationBuilder.DropTable(
-                name: "Wallets");
+                name: "Wallets",
+                schema: "User");
 
             migrationBuilder.DropTable(
                 name: "Orders",
