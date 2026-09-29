@@ -19,6 +19,7 @@ using Shop.Infrastructure.ProductAgg.Service;
 using Shop.Infrastructure.RoleAgg.Service;
 using Shop.Infrastructure.SellerAgg.Service;
 using Shop.Infrastructure.UserAgg.Service;
+using Shop.Presentation.Facade;
 
 namespace Shop.Config
 {
@@ -45,6 +46,8 @@ namespace Shop.Config
             services.AddScoped<IFileService, FileService>();
             // Domain Serviceها
             RegisterDomainServices(services);
+            // Initialize Facade Dependency
+            services.InitFacadeDependency();
         }
 
         public static void RegisterDomainServices(IServiceCollection services)
