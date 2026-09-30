@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Common/">
     <Project Path="Common/Common.Aplication/Common.Aplication.csproj" Id="b09ed1ab-f128-473a-bf7f-3a409d5c2ee4" />
+    <Project Path="Common/Common.AspNetCore/Common.AspNetCore.csproj" Id="a4d2c194-007c-4f1f-949d-528b92f94c83" />
     <Project Path="Common/Common.Domain/Common.Domain.csproj" />
     <Project Path="Common/Common.Query/Common.Query.csproj" Id="68215355-5a59-4306-a4b1-2333d5beaf57" />
   </Folder>

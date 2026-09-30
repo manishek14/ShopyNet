@@ -18,6 +18,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +28,7 @@
     <ProjectReference Include="..\..\..\Shop.Infrastructure\Shop.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Shop.Presentation.Facade\Shop.Presentation.Facade.csproj" />
     <ProjectReference Include="..\..\Shop.Config\Shop.Config.csproj" />
+    <ProjectReference Include="..\..\..\Common\Common.AspNetCore\Common.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>
