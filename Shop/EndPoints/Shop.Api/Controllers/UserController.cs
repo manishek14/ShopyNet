@@ -1,4 +1,6 @@
 ﻿using Common.Aplication;
+using Common.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.User.AddAddress;
 using Shop.Application.User.ChangePassword;
@@ -16,9 +18,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : ApiController
     {
         private readonly IUserFacade _userFacade;
 
@@ -27,112 +27,134 @@ namespace Shop.Api.Controllers
             _userFacade = userFacade;
         }
 
-        // Query
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<ApiResult> Register([FromBody] RegisterUserCommand command)
+        {
+            var result = await _userFacade.Register(command);
+            return CommandResult(result);
+        }
+
+        [HttpGet("current")]
+        [Authorize]
+        public async Task<ApiResult<UserDto>> GetCurrentUser()
+        {
+            var user = await _userFacade.GetUserById(UserId);
+            return QueryResult(user);
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUserById(Guid id)
+        [Authorize(Roles = "Admin")]
+        public async Task<ApiResult<UserDto>> GetUserById(Guid id)
         {
             var user = await _userFacade.GetUserById(id);
-            if (user == null) return NotFound(new { message = "User not found" });
-            return Ok(user);
+            return QueryResult(user);
         }
 
         [HttpGet("email/{email}")]
-        public async Task<ActionResult<UserDto>> GetUserByEmail(string email)
+        [Authorize(Roles = "Admin")]
+        public async Task<ApiResult<UserDto>> GetUserByEmail(string email)
         {
             var user = await _userFacade.GetUserByEmail(email);
-            if (user == null) return NotFound(new { message = "User not found" });
-            return Ok(user);
+            return QueryResult(user);
         }
 
         [HttpGet("phone/{phoneNumber}")]
-        public async Task<ActionResult<UserDto>> GetUserByPhoneNumber(string phoneNumber)
+        [Authorize(Roles = "Admin")]
+        public async Task<ApiResult<UserDto>> GetUserByPhoneNumber(string phoneNumber)
         {
             var user = await _userFacade.GetUserByPhoneNumber(phoneNumber);
-            if (user == null) return NotFound(new { message = "User not found" });
-            return Ok(user);
-        }
-
-        [HttpGet("{userId}/wallets")]
-        public async Task<ActionResult<List<WalletDto>>> GetWalletsByUserId(Guid userId)
-        {
-            var wallets = await _userFacade.GetWalletsByUserId(userId);
-            return Ok(wallets);
-        }
-
-        [HttpGet("{userId}/addresses")]
-        public async Task<ActionResult<List<UserAddressDto>>> GetUserAddresses(Guid userId)
-        {
-            var addresses = await _userFacade.GetUserAddresses(userId);
-            return Ok(addresses);
+            return QueryResult(user);
         }
 
         [HttpGet("filter")]
-        public async Task<ActionResult<UserFilterData>> GetUsersByFilter(
+        [Authorize(Roles = "Admin")]
+        public async Task<ApiResult<UserFilterData>> GetUsersByFilter(
             [FromQuery] UserFilterParams filterParams)
         {
             var result = await _userFacade.GetUsersByFilter(filterParams);
-            return Ok(result);
+            return QueryResult(result);
         }
 
-        // Command
-        [HttpPost("register")]
-        public async Task<ActionResult<OperationResult>> Register([FromBody] RegisterUserCommand command)
+        [HttpPut("edit")]
+        [Authorize]
+        public async Task<ApiResult> Edit([FromBody] EditUserCommand command)
         {
-            var result = await _userFacade.Register(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<OperationResult>> Edit(
-            Guid id, [FromBody] EditUserCommand command)
-        {
-            if (id != command.Id)
-                return BadRequest(new { message = "Id in URL does not match Id in body" });
-
-            var result = await _userFacade.Edit(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            var commandWithUserId = command with { Id = UserId };
+            var result = await _userFacade.Edit(commandWithUserId);
+            return CommandResult(result);
         }
 
         [HttpPut("change-password")]
-        public async Task<ActionResult<OperationResult>> ChangePassword([FromBody] ChangeUserPasswordCommand command)
+        [Authorize]
+        public async Task<ApiResult> ChangePassword([FromBody] ChangeUserPasswordCommand command)
         {
-            var result = await _userFacade.ChangePassword(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            var commandWithUserId = command with { UserId = UserId };
+            var result = await _userFacade.ChangePassword(commandWithUserId);
+            return CommandResult(result);
         }
 
-        [HttpPost("add-address")]
-        public async Task<ActionResult<OperationResult>> AddAddress([FromBody] AddUserAddressCommand command)
+        [HttpGet("addresses")]
+        [Authorize]
+        public async Task<ApiResult<List<UserAddressDto>>> GetMyAddresses()
         {
-            var result = await _userFacade.AddAddress(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            var addresses = await _userFacade.GetUserAddresses(UserId);
+            return QueryResult(addresses);
         }
 
-        [HttpPut("edit-address")]
-        public async Task<ActionResult<OperationResult>> EditAddress([FromBody] EditUserAddressCommand command)
+        [HttpPost("addresses")]
+        [Authorize]
+        public async Task<ApiResult> AddAddress([FromBody] AddUserAddressCommand command)
         {
-            var result = await _userFacade.EditAddress(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            var commandWithUserId = command with { UserId = UserId };
+            var result = await _userFacade.AddAddress(commandWithUserId);
+            return CommandResult(result);
         }
 
-        [HttpDelete("remove-address")]
-        public async Task<ActionResult<OperationResult>> RemoveAddress([FromBody] RemoveUserAddressCommand command)
+        [HttpPut("addresses")]
+        [Authorize]
+        public async Task<ApiResult> EditAddress([FromBody] EditUserAddressCommand command)
         {
+            var commandWithUserId = command with { UserId = UserId };
+            var result = await _userFacade.EditAddress(commandWithUserId);
+            return CommandResult(result);
+        }
+
+        [HttpDelete("addresses/{addressId}")]
+        [Authorize]
+        public async Task<ApiResult> RemoveAddress(Guid addressId)
+        {
+            var command = new RemoveUserAddressCommand(UserId, addressId);
             var result = await _userFacade.RemoveAddress(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            return CommandResult(result);
         }
 
-        [HttpPost("charge-wallet")]
-        public async Task<ActionResult<OperationResult>> ChargeWallet([FromBody] ChargeUserWalletCommand command)
+        [HttpGet("wallets")]
+        [Authorize]
+        public async Task<ApiResult<List<WalletDto>>> GetMyWallets()
         {
-            var result = await _userFacade.ChargeWallet(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            var wallets = await _userFacade.GetWalletsByUserId(UserId);
+            return QueryResult(wallets);
         }
 
-        [HttpPut("set-roles")]
-        public async Task<ActionResult<OperationResult>> SetRoles([FromBody] SetUserRolesCommand command)
+        [HttpPost("wallets/charge")]
+        [Authorize]
+        public async Task<ApiResult> ChargeWallet([FromBody] ChargeUserWalletCommand command)
         {
+            var commandWithUserId = command with { UserId = UserId };
+            var result = await _userFacade.ChargeWallet(commandWithUserId);
+            return CommandResult(result);
+        }
+
+        [HttpPut("{userId}/set-roles")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResult>> SetRoles(Guid userId, [FromBody] SetUserRolesCommand command)
+        {
+            if (userId != command.UserId)
+                return BadRequest(new { message = "Id in URL does not match UserId in body" });
+
             var result = await _userFacade.SetRoles(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            return CommandResult(result);
         }
     }
 }
