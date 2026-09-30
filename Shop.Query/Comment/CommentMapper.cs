@@ -1,5 +1,5 @@
-﻿using Shop.Domain.CommentAgg;
-using Shop.Query.Comment.DTOs;
+﻿using Shop.Query.Comment.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,7 +17,7 @@ namespace Shop.Query.Comment
                 Id = comment.Id,
                 UserId = comment.UserId,
                 ProductId = comment.ProductId,
-                ReplyId = comment.ReplyId == Guid.Empty ? null : comment.ReplyId,
+                ReplyId = comment.ReplyId,
                 Content = comment.content,
                 Status = comment.status,
                 CreatedDate = comment.CreatedAt,
@@ -25,7 +25,7 @@ namespace Shop.Query.Comment
             };
         }
 
-        public static List<CommentDto> Map(this List<Domain.CommentAgg.Comment>? comments)
+        public static List<CommentDto> MapList(this List<Domain.CommentAgg.Comment>? comments)
         {
             var result = new List<CommentDto>();
             if (comments == null)
@@ -39,14 +39,20 @@ namespace Shop.Query.Comment
             return result;
         }
 
-        public static List<CommentWithReplyDto> MapWithReplies(this List<Domain.CommentAgg.Comment>? comments)
+        public static List<CommentWithReplyDto> MapWithReplies(
+            this List<Domain.CommentAgg.Comment>? comments)
         {
             var result = new List<CommentWithReplyDto>();
             if (comments == null)
                 return result;
 
-            var rootComments = comments.Where(c => c.ReplyId == Guid.Empty).ToList();
-            var replies = comments.Where(c => c.ReplyId != Guid.Empty).ToList();
+            var rootComments = comments
+                .Where(c => c.ReplyId == null)
+                .ToList();
+
+            var replies = comments
+                .Where(c => c.ReplyId != null)
+                .ToList();
 
             foreach (var root in rootComments)
             {

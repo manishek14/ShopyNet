@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -21,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shop.Application\Shop.Application.csproj" />
     <ProjectReference Include="..\..\..\Shop.Infrastructure\Shop.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Shop.Presentation.Facade\Shop.Presentation.Facade.csproj" />
     <ProjectReference Include="..\..\Shop.Config\Shop.Config.csproj" />
   </ItemGroup>
 

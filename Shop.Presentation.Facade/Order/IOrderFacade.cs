@@ -24,6 +24,8 @@ namespace Shop.Presentation.Facade.Order
         Task<OperationResult> Finally(FinallyOrderCommand command);
 
         Task<OrderDto> GetOrderById(Guid id);
-        Task<OrderFilterData> GetOrdersByFilterQuery(OrderFilterParams FilterParams);
+        Task<List<OrderDto>> GetOrdersByUserId(Guid userId);  
+
+        Task<OrderFilterData> GetOrdersByFilter(OrderFilterParams filterParams);
     }
 }

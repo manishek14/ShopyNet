@@ -18,5 +18,7 @@ namespace Shop.Presentation.Facade.Comment
         Task<CommentDto> GetCommentById(Guid id);
         Task<List<CommentDto>> GetCommentsByProductId(Guid productId);
         Task<List<CommentDto>> GetComments();
+
+        Task<CommentFilterData> GetCommentsByFilter(CommentFilterParams filterParams);
     }
 }

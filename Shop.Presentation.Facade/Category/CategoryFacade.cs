@@ -4,6 +4,8 @@ using Shop.Application.Category.AddChild;
 using Shop.Application.Category.Create;
 using Shop.Application.Category.Edit;
 using Shop.Query.Category.DTOs;
+using Shop.Query.Category.GetByFilter;
+using Shop.Query.Category.GetByFilterQuery;
 using Shop.Query.Category.GetById;
 using Shop.Query.Category.GetByParent;
 using Shop.Query.Category.GetList;
@@ -23,33 +25,24 @@ namespace Shop.Presentation.Facade.Category
         }
 
         public async Task<OperationResult> AddChild(AddChildCategoryCommand command)
-        {
-            return await _mediator.Send(command);
-        }
+            => await _mediator.Send(command);
 
         public async Task<OperationResult> Create(CreateCategoryCommand command)
-        {
-            return await _mediator.Send(command);
-        }
+            => await _mediator.Send(command);
 
         public async Task<OperationResult> Edit(EditCategoryCommand command)
-        {
-            return await _mediator.Send(command);
-        }
-
-        public async Task<List<CategoryWithChildsDto>> GetCategories()
-        {
-            return await _mediator.Send(new GetCategoriesListQuery());
-        }
-
-        public async Task<List<CategoryWithParentDto>> GetCategoriesByParent(Guid parentId)
-        {
-            return await _mediator.Send(new GetCategoryByParentQuery(parentId));
-        }
+            => await _mediator.Send(command);
 
         public async Task<CategoryDto> GetCategoryById(Guid id)
-        {
-            return await _mediator.Send(new GetCategoryByIdQuery(id));
-        }
+            => await _mediator.Send(new GetCategoryByIdQuery(id));
+
+        public async Task<List<CategoryWithParentDto>> GetCategoriesByParent(Guid parentId)
+            => await _mediator.Send(new GetCategoryByParentQuery(parentId));
+
+        public async Task<List<CategoryWithChildsDto>> GetCategories()
+            => await _mediator.Send(new GetCategoriesListQuery());
+
+        public async Task<CategoryFilterData> GetCategoriesByFilter(CategoryFilterParams filterParams)
+            => await _mediator.Send(new GetCategoriesByFilterQuery(filterParams));
     }
 }

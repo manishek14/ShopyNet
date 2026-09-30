@@ -26,7 +26,7 @@ namespace Shop.Query.Comment.GetList
                 .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync(cancellationToken);
 
-            return comments.Map();
+            return comments.MapList();  
         }
     }
 }

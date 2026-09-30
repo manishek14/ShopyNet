@@ -5,6 +5,7 @@ using Shop.Application.Comment.Create;
 using Shop.Application.Comment.Edit;
 using Shop.Query.Comment.DTOs;
 using Shop.Query.Comment.GetById;
+using Shop.Query.Comment.GetByFilter;
 using Shop.Query.Comment.GetByProductId;
 using Shop.Query.Comment.GetList;
 using System;
@@ -39,5 +40,8 @@ namespace Shop.Presentation.Facade.Comment
 
         public async Task<List<CommentDto>> GetComments()
             => await _mediator.Send(new GetCommentsListQuery());
+
+        public async Task<CommentFilterData> GetCommentsByFilter(CommentFilterParams filterParams)
+            => await _mediator.Send(new GetCommentsByFilterQuery(filterParams));
     }
 }
