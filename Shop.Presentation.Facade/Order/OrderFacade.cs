@@ -8,8 +8,9 @@ using Shop.Application.Order.RemoveItem;
 using Shop.Application.Order.SetAddress;
 using Shop.Application.Order.SetShippingMethod;
 using Shop.Query.Order.DTOs;
-using Shop.Query.Order.GetByFilter;
 using Shop.Query.Order.GetById;
+using Shop.Query.Order.GetByFilter;
+using Shop.Query.Order.GetByUserId;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace Shop.Presentation.Facade.Order
         {
             _mediator = mediator;
         }
+
+        // Command
         public async Task<OperationResult> AddItem(AddOrderItemCommand command)
             => await _mediator.Send(command);
 
@@ -45,10 +48,16 @@ namespace Shop.Presentation.Facade.Order
         public async Task<OperationResult> Finally(FinallyOrderCommand command)
             => await _mediator.Send(command);
 
+
+        // Query
         public async Task<OrderDto> GetOrderById(Guid id)
             => await _mediator.Send(new GetOrderByIdQuery(id));
 
-        public async Task<OrderFilterData> GetOrdersByFilterQuery(OrderFilterParams filterParams)
+        public async Task<List<OrderDto>> GetOrdersByUserId(Guid userId)
+            => await _mediator.Send(new GetOrderByUserIdQuery(userId));
+
+        // Filter
+        public async Task<OrderFilterData> GetOrdersByFilter(OrderFilterParams filterParams)
             => await _mediator.Send(new GetOrdersByFilterQuery(filterParams));
     }
 }

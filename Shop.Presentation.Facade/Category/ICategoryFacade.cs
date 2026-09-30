@@ -18,5 +18,7 @@ namespace Shop.Presentation.Facade.Category
         Task<CategoryDto> GetCategoryById(Guid id);
         Task<List<CategoryWithParentDto>> GetCategoriesByParent(Guid parentId);
         Task<List<CategoryWithChildsDto>> GetCategories();
+
+        Task<CategoryFilterData> GetCategoriesByFilter(CategoryFilterParams filterParams);
     }
 }

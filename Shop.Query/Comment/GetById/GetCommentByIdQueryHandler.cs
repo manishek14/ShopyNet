@@ -20,7 +20,7 @@ namespace Shop.Query.Comment.GetById
             var comment = await _shopContext.Comments
                 .SingleOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
 
-            return comment.Map();
+            return comment.Map(); 
         }
     }
 }
