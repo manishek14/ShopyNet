@@ -1,4 +1,5 @@
-using Common.AspNetCore.Middlewares;  
+using Common.AspNetCore.Middlewares;
+using Shop.Api.Infrastructure.JwtUtil;
 using Shop.Config;
 using Shop.Presentation.Facade;
 
@@ -11,12 +12,15 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string not found.");
 
+var jwtConfig = builder.Configuration.GetSection("JwtConfig").Get<JwtConfig>();
+builder.Services.AddSingleton(jwtConfig);
+
 builder.Services.RegisterShopDependency(connectionString);
 builder.Services.InitFacadeDependency();
 
 var app = builder.Build();
 
-app.UseApiCustomExceptionHandler();  
+app.UseApiCustomExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {

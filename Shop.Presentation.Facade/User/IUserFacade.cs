@@ -1,11 +1,13 @@
 ﻿using Common.Aplication;
 using Shop.Application.User.AddAddress;
+using Shop.Application.User.AddToken;
 using Shop.Application.User.ChangePassword;
 using Shop.Application.User.ChargeWallet;
 using Shop.Application.User.Edit;
 using Shop.Application.User.EditAddress;
 using Shop.Application.User.Register;
 using Shop.Application.User.RemoveAddress;
+using Shop.Application.User.RemoveToken;
 using Shop.Application.User.SetRoles;
 using Shop.Query.User.DTOs;
 using System;
@@ -25,12 +27,16 @@ namespace Shop.Presentation.Facade.User
         Task<OperationResult> ChargeWallet(ChargeUserWalletCommand command);
         Task<OperationResult> SetRoles(SetUserRolesCommand command);
 
+        Task<OperationResult> AddToken(AddUserTokenCommand command);
+        Task<OperationResult> RemoveToken(RemoveUserTokenCommand command);
         Task<UserDto> GetUserById(Guid id);
         Task<UserDto> GetUserByEmail(string email);
         Task<UserDto> GetUserByPhoneNumber(string phoneNumber);
         Task<List<WalletDto>> GetWalletsByUserId(Guid userId);
         Task<List<UserAddressDto>> GetUserAddresses(Guid userId);
-
         Task<UserFilterData> GetUsersByFilter(UserFilterParams filterParams);
+        Task<UserTokenDto> GetUserTokenByJwtToken(string hashJwtToken);
+        Task<UserTokenDto> GetUserTokenByRefreshToken(string hashRefreshToken);
+
     }
 }

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Shop.Query.User.DTOs;
 
 namespace Shop.Query.User.GetUserTokenByJwtToken
 {
-    internal class GetUserTokenByJwtTokenQuery
-    {
-    }
+    public record GetUserTokenByJwtTokenQuery(string HashJwtToken)
+        : IBaseQuery<UserTokenDto>;
 }

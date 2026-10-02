@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Shop.Query.User.DTOs;
 
-namespace Shop.Query.User.GetUserTokenByJwtToken
+namespace Shop.Query.User.GetUserTokenByRefreshToken
 {
-    internal class GetUserTokenByRefreshTokenQuery
-    {
-    }
+    public record GetUserTokenByRefreshTokenQuery(string HashRefreshToken)
+        : IBaseQuery<UserTokenDto>;
 }
