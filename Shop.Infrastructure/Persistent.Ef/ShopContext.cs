@@ -48,6 +48,7 @@ namespace Shop.Infrastructure.Persistent.Ef
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<UserToken> UserTokens { get; set; }
 
         // Enums configuration
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -68,6 +69,7 @@ namespace Shop.Infrastructure.Persistent.Ef
             modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new WalletConfiguration());
             modelBuilder.ApplyConfiguration(new UserAddressConfiguration());
+            modelBuilder.ApplyConfiguration(new UserTokenConfiguration());
 
             // ProductAgg
             modelBuilder.ApplyConfiguration(new ProductConfiguration());

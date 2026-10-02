@@ -18,6 +18,7 @@ namespace Shop.Query.User
                 Family = user.Family,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                Password = user.Password,
                 Gender = user.Gender,
                 IsActive = user.IsActive,
                 CreatedDate = user.CreatedAt,
@@ -79,6 +80,24 @@ namespace Shop.Query.User
                 result.Add(Map(wallet));
 
             return result;
+        }
+
+        public static UserTokenDto? Map(this Domain.UserAgg.UserToken? token)
+        {
+            if (token is null)
+                return null;
+
+            return new UserTokenDto
+            {
+                Id = token.Id,
+                UserId = token.UserId,
+                HashJwtToken = token.HashJwtToken,
+                HashRefreshToken = token.HashRefreshToken,
+                TokenExpireDate = token.TokenExpireDate,
+                RefreshTokenExpireDate = token.RefreshTokenExpireDate,
+                Device = token.Device,
+                CreatedDate = token.CreatedAt
+            };
         }
 
         private static UserRoleDto MapRole(Domain.UserAgg.UserRole userRole)

@@ -7,5 +7,6 @@ namespace Shop.Query.User.DTOs
     {
         public Guid UserId { get; set; }
         public Guid RoleId { get; set; }
+        public string RoleTitle { get; set; } = string.Empty;
     }
 }

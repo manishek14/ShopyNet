@@ -1,12 +1,14 @@
 ﻿using Common.Aplication;
 using MediatR;
 using Shop.Application.User.AddAddress;
+using Shop.Application.User.AddToken;
 using Shop.Application.User.ChangePassword;
 using Shop.Application.User.ChargeWallet;
 using Shop.Application.User.Edit;
 using Shop.Application.User.EditAddress;
 using Shop.Application.User.Register;
 using Shop.Application.User.RemoveAddress;
+using Shop.Application.User.RemoveToken;
 using Shop.Application.User.SetRoles;
 using Shop.Query.User.DTOs;
 using Shop.Query.User.GetAddresses;
@@ -14,6 +16,8 @@ using Shop.Query.User.GetByEmail;
 using Shop.Query.User.GetByFilter;
 using Shop.Query.User.GetById;
 using Shop.Query.User.GetByPhoneNumber;
+using Shop.Query.User.GetUserTokenByJwtToken;
+using Shop.Query.User.GetUserTokenByRefreshToken;
 using Shop.Query.User.GetWalletsByUserId;
 using System;
 using System.Collections.Generic;
@@ -54,6 +58,12 @@ namespace Shop.Presentation.Facade.User
         public async Task<OperationResult> SetRoles(SetUserRolesCommand command)
             => await _mediator.Send(command);
 
+        public async Task<OperationResult> AddToken(AddUserTokenCommand command)
+            => await _mediator.Send(command);
+
+        public async Task<OperationResult> RemoveToken(RemoveUserTokenCommand command)
+            => await _mediator.Send(command);
+
         public async Task<UserDto> GetUserById(Guid id)
             => await _mediator.Send(new GetUserByIdQuery(id));
 
@@ -71,5 +81,11 @@ namespace Shop.Presentation.Facade.User
 
         public async Task<UserFilterData> GetUsersByFilter(UserFilterParams filterParams)
             => await _mediator.Send(new GetUsersByFilterQuery(filterParams));
+
+        public async Task<UserTokenDto> GetUserTokenByJwtToken(string hashJwtToken)
+            => await _mediator.Send(new GetUserTokenByJwtTokenQuery(hashJwtToken));
+
+        public async Task<UserTokenDto> GetUserTokenByRefreshToken(string hashRefreshToken)
+            => await _mediator.Send(new GetUserTokenByRefreshTokenQuery(hashRefreshToken));
     }
 }
