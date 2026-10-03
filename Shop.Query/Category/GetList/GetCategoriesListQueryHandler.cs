@@ -9,7 +9,7 @@ using Shop.Query.Category;
 
 namespace Shop.Query.Category.GetList
 {
-    internal class GetCategoriesListQueryHandler : IBaseQueryHandler<GetCategoriesListQuery, List<CategoryWithChildsDto>>
+    public class GetCategoriesListQueryHandler : IBaseQueryHandler<GetCategoriesListQuery, List<CategoryWithChildsDto>>
     {
         private readonly ShopContext _shopContext;
 

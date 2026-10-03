@@ -7,5 +7,6 @@ namespace Shop.Domain.CategoryAgg
 {
     public interface ICategoryRepository : IBaseRepository<Category>
     {
+        Task<Category> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);
     }
 }
