@@ -1,6 +1,8 @@
 ﻿using Common.Aplication;
-using Common.Application.Validation;
 using Shop.Domain.CategoryAgg;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Shop.Application.Category.AddChild
 {
@@ -10,23 +12,30 @@ namespace Shop.Application.Category.AddChild
 
         public AddChildCategoryCommandHandler(ICategoryRepository categoryRepository)
         {
-            _categoryRepository = categoryRepository
-                ?? throw new ArgumentNullException(nameof(categoryRepository));
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<OperationResult> Handle(
             AddChildCategoryCommand request,
             CancellationToken cancellationToken)
         {
-            var parentCategory = await _categoryRepository
-                .GetByIdAsync(request.ParentId, cancellationToken);
+            var parent = await _categoryRepository.GetByIdAsync(request.ParentId, cancellationToken);
+            if (parent == null)
+                return OperationResult.NotFound("Parent category not found.");
 
-            if (parentCategory == null)
-                return OperationResult.NotFound(ValidationMessages.NotFound);
+            var existingCategory = await _categoryRepository.GetBySlugAsync(request.Slug, cancellationToken);
+            if (existingCategory != null)
+                return OperationResult.Error("Slug already exists.");
 
-            parentCategory.AddChild(request.Title, request.Slug, request.SeoData);
+            var child = new Domain.CategoryAgg.Category(
+                request.Title,
+                request.Slug,
+                request.SeoData
+            );
 
-            _categoryRepository.Update(parentCategory);
+            child.SetParent(request.ParentId);
+
+            await _categoryRepository.AddAsync(child, cancellationToken);
             await _categoryRepository.SaveAsync(cancellationToken);
 
             return OperationResult.Success();

@@ -40,12 +40,9 @@ namespace Shop.Domain.CategoryAgg
             SeoData = seoData;
         }
 
-        public void AddChild(string title, string slug, SeoData seoData)
+        public void SetParent(Guid? parentId)
         {
-            Childs.Add(new Category(title, slug, seoData)
-            {
-                ParentId = Id
-            });
+            ParentId = parentId;
         }
 
         private static void Guard(string title, string slug, SeoData seoData)
