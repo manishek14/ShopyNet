@@ -1,4 +1,5 @@
-﻿using Common.Aplication.Validation;
+﻿using System.IO;
+using Common.Aplication.Validation;
 using Common.Domain.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,7 +40,7 @@ namespace Common.AspNetCore.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            string message = null;
+            object message = null;
             HttpStatusCode httpStatusCode = HttpStatusCode.InternalServerError;
             AppStatusCode apiStatusCode = AppStatusCode.ServerError;
 
@@ -47,10 +48,11 @@ namespace Common.AspNetCore.Middlewares
             {
                 await _next(context);
             }
-            catch (InvalidDomainDataException exception)
+            catch (InvalidDomainDataException exception)   
             {
                 _logger.LogError(exception, exception.Message);
-                apiStatusCode = AppStatusCode.LogicError;
+                httpStatusCode = HttpStatusCode.BadRequest; 
+                apiStatusCode = AppStatusCode.BadRequest;
                 SetErrorMessage(exception);
                 await WriteToResponseAsync();
             }
@@ -58,6 +60,16 @@ namespace Common.AspNetCore.Middlewares
             {
                 _logger.LogError(exception, exception.Message);
                 httpStatusCode = HttpStatusCode.BadRequest;
+                apiStatusCode = AppStatusCode.BadRequest;
+                SetErrorMessage(exception);
+                await WriteToResponseAsync();
+            }
+            catch (InvalidDataException exception)
+            {
+                _logger.LogError(exception, exception.Message);
+                httpStatusCode = HttpStatusCode.BadRequest;
+                apiStatusCode = AppStatusCode.BadRequest;
+
                 SetErrorMessage(exception);
                 await WriteToResponseAsync();
             }
@@ -70,10 +82,12 @@ namespace Common.AspNetCore.Middlewares
 
             void SetErrorMessage(Exception exception)
             {
+                // Default: simple message
                 message = exception.Message;
 
                 if (_env.IsDevelopment())
                 {
+                    // Provide structured details in development for easier debugging
                     var dic = new Dictionary<string, string>
                     {
                         ["Exception"] = exception.Message,
@@ -86,7 +100,7 @@ namespace Common.AspNetCore.Middlewares
                         dic.Add("InnerException.StackTrace", exception.InnerException.StackTrace);
                     }
 
-                    message = JsonConvert.SerializeObject(dic);
+                    message = dic;
                 }
             }
 

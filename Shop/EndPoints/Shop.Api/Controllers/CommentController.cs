@@ -1,4 +1,5 @@
 ﻿using Common.Aplication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Comment.ChangeStatus;
 using Shop.Application.Comment.Create;
@@ -24,6 +25,7 @@ namespace Shop.Api.Controllers
 
         // Query
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<CommentDto>> GetCommentById(Guid id)
         {
             var comment = await _commentFacade.GetCommentById(id);
@@ -32,6 +34,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("product/{productId}")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<CommentDto>>> GetCommentsByProductId(Guid productId)
         {
             var comments = await _commentFacade.GetCommentsByProductId(productId);
@@ -39,6 +42,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<CommentDto>>> GetComments()
         {
             var comments = await _commentFacade.GetComments();
@@ -46,6 +50,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("filter")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<CommentFilterData>> GetCommentsByFilter(
             [FromQuery] CommentFilterParams filterParams)
         {
@@ -55,6 +60,7 @@ namespace Shop.Api.Controllers
 
         // Command
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<OperationResult>> CreateComment(
             [FromBody] CreateCommentCommand command)
         {
@@ -64,6 +70,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> EditComment(
             Guid id, [FromBody] EditCommentCommand command)
         {
@@ -76,6 +83,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("{id}/change-status")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> ChangeStatus(
             Guid id, [FromBody] ChangeCommentStatusCommand command)
         {

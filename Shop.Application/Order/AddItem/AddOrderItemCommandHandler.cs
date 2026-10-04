@@ -2,6 +2,9 @@
 using Shop.Domain.OrderAgg;
 using Shop.Domain.OrderAgg.Enums;
 using Shop.Domain.OrderAgg.Repositories;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Shop.Application.Order.AddItem
 {
@@ -11,25 +14,15 @@ namespace Shop.Application.Order.AddItem
 
         public AddOrderItemCommandHandler(IOrderRepository orderRepository)
         {
-            _orderRepository = orderRepository
-                ?? throw new ArgumentNullException(nameof(orderRepository));
+            _orderRepository = orderRepository;
         }
 
         public async Task<OperationResult> Handle(
             AddOrderItemCommand request,
             CancellationToken cancellationToken)
         {
-            var orders = await _orderRepository.FindAsync(
-                o => o.UserId == request.UserId && o.Status == OrderStatus.Pending,
-                cancellationToken);
-
-            var order = orders.FirstOrDefault();
-
-            if (order == null)
-            {
-                order = new Domain.OrderAgg.Order(request.UserId);
-                await _orderRepository.AddAsync(order, cancellationToken);
-            }
+            var order = await _orderRepository.GetPendingOrderByUserIdAsync(
+                request.UserId, cancellationToken);
 
             var item = new OrderItem(
                 request.InventoryId,
@@ -37,10 +30,20 @@ namespace Shop.Application.Order.AddItem
                 request.Price
             );
 
-            order.AddItem(item);
+            if (order == null)
+            {
+                // Create order and add item before saving to avoid concurrency/race issues
+                order = new Domain.OrderAgg.Order(request.UserId);
+                order.AddItem(item);
+                await _orderRepository.AddAsync(order, cancellationToken);
 
-            _orderRepository.Update(order);
-            await _orderRepository.SaveAsync(cancellationToken);
+                await _orderRepository.SaveAsync(cancellationToken);
+            }
+            else
+            {
+                order.AddItem(item);
+                await _orderRepository.SaveAsync(cancellationToken);
+            }
 
             return OperationResult.Success();
         }

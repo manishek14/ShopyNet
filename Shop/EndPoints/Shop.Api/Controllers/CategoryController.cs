@@ -1,4 +1,5 @@
 ﻿using Common.Aplication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Category.AddChild;
 using Shop.Application.Category.Create;
@@ -24,6 +25,7 @@ namespace Shop.Api.Controllers
 
         // Query
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<CategoryDto>> GetCategoryById(Guid id)
         {
             var category = await _categoryFacade.GetCategoryById(id);
@@ -32,6 +34,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("parent/{parentId}")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<CategoryWithParentDto>>> GetCategoriesByParent(Guid parentId)
         {
             var categories = await _categoryFacade.GetCategoriesByParent(parentId);
@@ -39,6 +42,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<CategoryWithChildsDto>>> GetCategories()
         {
             var categories = await _categoryFacade.GetCategories();
@@ -46,6 +50,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("filter")]
+        [AllowAnonymous]
         public async Task<ActionResult<CategoryFilterData>> GetCategoriesByFilter(
             [FromQuery] CategoryFilterParams filterParams)
         {
@@ -55,6 +60,7 @@ namespace Shop.Api.Controllers
 
         // Command
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> CreateCategory(
             [FromBody] CreateCategoryCommand command)
         {
@@ -67,6 +73,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> EditCategory(
             Guid id, [FromBody] EditCategoryCommand command)
         {
@@ -82,6 +89,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPost("add-child")]
+        [Authorize(Roles = "Admin")]    
         public async Task<ActionResult<OperationResult>> AddChildCategory(
             [FromBody] AddChildCategoryCommand command)
         {

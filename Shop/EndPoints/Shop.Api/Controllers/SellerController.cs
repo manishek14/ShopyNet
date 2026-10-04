@@ -1,4 +1,5 @@
 ﻿using Common.Aplication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Sellers.AddInventory;
 using Shop.Application.Sellers.ChangeStatus;
@@ -27,6 +28,7 @@ namespace Shop.Api.Controllers
 
         // Query
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<SellerDto>> GetSellerById(Guid id)
         {
             var seller = await _sellerFacade.GetSellerById(id);
@@ -35,6 +37,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize]
         public async Task<ActionResult<SellerDto>> GetSellerByUserId(Guid userId)
         {
             var seller = await _sellerFacade.GetSellerByUserId(userId);
@@ -43,6 +46,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("{sellerId}/inventories")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<SellerInventoryDto>>> GetSellerInventories(Guid sellerId)
         {
             var inventories = await _sellerFacade.GetSellerInventories(sellerId);
@@ -50,6 +54,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("filter")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<SellerFilterData>> GetSellersByFilter(
             [FromQuery] SellerFilterParams filterParams)
         {
@@ -59,6 +64,7 @@ namespace Shop.Api.Controllers
 
         // Command
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> CreateSeller([FromBody] CreateSellerCommand command)
         {
             var result = await _sellerFacade.Create(command);
@@ -66,6 +72,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> EditSeller(
             Guid id, [FromBody] EditSellerCommand command)
         {
@@ -77,6 +84,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("{id}/change-status")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> ChangeStatus(
             Guid id, [FromBody] ChangeSellerStatusCommand command)
         {
@@ -88,6 +96,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPost("add-inventory")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> AddInventory([FromBody] AddSellerInventoryCommand command)
         {
             var result = await _sellerFacade.AddInventory(command);
@@ -95,6 +104,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("edit-inventory")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> EditInventory([FromBody] EditSellerInventoryCommand command)
         {
             var result = await _sellerFacade.EditInventory(command);
@@ -102,6 +112,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpDelete("remove-inventory")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> RemoveInventory([FromBody] RemoveSellerInventoryCommand command)
         {
             var result = await _sellerFacade.RemoveInventory(command);

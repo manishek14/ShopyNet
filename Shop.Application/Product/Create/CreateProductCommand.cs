@@ -1,15 +1,14 @@
 ﻿using Common.Aplication;
-using Common.Application;
-using Common.Domain.ValueObject;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Common.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Shop.Application.Products.Create
 {
+    public record SpecificationDto(string Key, string Value);
+
     public record CreateProductCommand(
         string Title,
         string Description,
@@ -18,7 +17,9 @@ namespace Shop.Application.Products.Create
         Guid SubCategoryId,
         Guid SecondarySubCategoryId,
         string Slug,
-        SeoData SeoData,
-        Dictionary<string, string> Specifications
+        SeoData? SeoData,
+        List<SpecificationDto>? Specifications
     ) : IBaseCommand;
+
+    // Validator is defined in CreateProductCommandValidator.cs
 }

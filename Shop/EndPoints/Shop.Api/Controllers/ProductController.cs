@@ -1,4 +1,6 @@
 ﻿using Common.Aplication;
+using Common.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Products.AddImage;
 using Shop.Application.Products.Create;
@@ -11,9 +13,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController : ApiController
     {
         private readonly IProductFacade _productFacade;
 
@@ -22,66 +22,73 @@ namespace Shop.Api.Controllers
             _productFacade = productFacade;
         }
 
-        // Query
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDto>> GetProductById(Guid id)
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiResult<ProductDto>>> GetProductById(Guid id)
         {
             var product = await _productFacade.GetProductById(id);
             if (product == null) return NotFound(new { message = "Product not found" });
-            return Ok(product);
+            return QueryResult(product);
         }
 
         [HttpGet("slug/{slug}")]
-        public async Task<ActionResult<ProductDto>> GetProductBySlug(string slug)
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiResult<ProductDto>>> GetProductBySlug(string slug)
         {
             var product = await _productFacade.GetProductBySlug(slug);
             if (product == null) return NotFound(new { message = "Product not found" });
-            return Ok(product);
+            return QueryResult(product);
         }
 
         [HttpGet("filter")]
-        public async Task<ActionResult<ProductFilterData>> GetProductsByFilter(
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiResult<ProductFilterData>>> GetProductsByFilter(
             [FromQuery] ProductFilterParams filterParams)
         {
             var result = await _productFacade.GetProductsByFilterQuery(filterParams);
-            return Ok(result);
+            return QueryResult(result);
         }
 
-        // Command
         [HttpPost]
-        [RequestSizeLimit(10 * 1024 * 1024)] // 10MB
-        public async Task<ActionResult<OperationResult>> CreateProduct(
+        [Authorize(Roles = "Admin")]
+        [RequestSizeLimit(10 * 1024 * 1024)]
+        public async Task<ActionResult<ApiResult>> CreateProduct(
             [FromForm] CreateProductCommand command)
         {
             var result = await _productFacade.Create(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            return CommandResult(result);
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [RequestSizeLimit(10 * 1024 * 1024)]
-        public async Task<ActionResult<OperationResult>> EditProduct(
+        public async Task<ActionResult<ApiResult>> EditProduct(
             Guid id, [FromForm] EditProductCommand command)
         {
             if (id != command.Id)
                 return BadRequest(new { message = "Id in URL does not match Id in body" });
 
             var result = await _productFacade.Edit(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            return CommandResult(result);
         }
 
         [HttpPost("add-image")]
+        [Authorize(Roles = "Admin")]
         [RequestSizeLimit(10 * 1024 * 1024)]
-        public async Task<ActionResult<OperationResult>> AddImage([FromForm] AddProductImageCommand command)
+        public async Task<ActionResult<ApiResult>> AddImage(
+            [FromForm] AddProductImageCommand command)
         {
             var result = await _productFacade.AddImage(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            return CommandResult(result);
         }
 
         [HttpDelete("remove-image")]
-        public async Task<ActionResult<OperationResult>> RemoveImage([FromBody] RemoveProductImageCommand command)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResult>> RemoveImage(
+            [FromBody] RemoveProductImageCommand command)
         {
             var result = await _productFacade.RemoveImage(command);
-            return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
+            return CommandResult(result);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Common.Aplication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Role.Create;
 using Shop.Application.Role.Edit;
@@ -23,6 +24,7 @@ namespace Shop.Api.Controllers
 
         // Query
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<RoleDto>> GetRoleById(Guid id)
         {
             var role = await _roleFacade.GetRoleById(id);
@@ -31,6 +33,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("filter")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<RoleFilterData>> GetRolesByFilter(
             [FromQuery] RoleFilterParams filterParams)
         {
@@ -40,6 +43,7 @@ namespace Shop.Api.Controllers
 
         // Command
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> CreateRole([FromBody] CreateRoleCommand command)
         {
             var result = await _roleFacade.Create(command);
@@ -47,6 +51,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> EditRole(
             Guid id, [FromBody] EditRoleCommand command)
         {
@@ -58,6 +63,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("{id}/set-permissions")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationResult>> SetPermissions(
             Guid id, [FromBody] SetRolePermissionsCommand command)
         {

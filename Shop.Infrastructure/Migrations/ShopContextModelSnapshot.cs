@@ -131,7 +131,7 @@ namespace Shop.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FinallyAt")
+                    b.Property<DateTime?>("FinallyAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
@@ -149,7 +149,9 @@ namespace Shop.Infrastructure.Migrations
                         .HasDatabaseName("IX_Orders_Status");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("IX_Orders_UserId");
+                        .IsUnique()
+                        .HasDatabaseName("UX_Orders_UserId_Pending")
+                        .HasFilter("[Status] = 0");
 
                     b.ToTable("Orders", "Order");
                 });
@@ -201,9 +203,7 @@ namespace Shop.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -250,21 +250,9 @@ namespace Shop.Infrastructure.Migrations
                     b.HasIndex("IsActive")
                         .HasDatabaseName("IX_Products_IsActive");
 
-                    b.HasIndex("NestedCategoryId")
-                        .HasDatabaseName("IX_Products_NestedCategoryId");
-
                     b.HasIndex("Slug")
                         .IsUnique()
                         .HasDatabaseName("IX_Products_Slug");
-
-                    b.HasIndex("SubCategoryId")
-                        .HasDatabaseName("IX_Products_SubCategoryId");
-
-                    b.HasIndex("Title")
-                        .HasDatabaseName("IX_Products_Title");
-
-                    b.HasIndex("CategoryId", "IsActive")
-                        .HasDatabaseName("IX_Products_CategoryId_IsActive");
 
                     b.ToTable("Products", "Product");
                 });
@@ -656,6 +644,58 @@ namespace Shop.Infrastructure.Migrations
                     b.ToTable("UserRoles", "User");
                 });
 
+            modelBuilder.Entity("Shop.Domain.UserAgg.UserToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Device")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("HashJwtToken")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("HashRefreshToken")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("RefreshTokenExpireDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TokenExpireDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HashJwtToken")
+                        .HasDatabaseName("IX_UserTokens_HashJwtToken");
+
+                    b.HasIndex("HashRefreshToken")
+                        .HasDatabaseName("IX_UserTokens_HashRefreshToken");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_UserTokens_UserId");
+
+                    b.ToTable("UserTokens", "User");
+                });
+
             modelBuilder.Entity("Shop.Domain.UserAgg.Wallet", b =>
                 {
                     b.Property<Guid>("Id")
@@ -921,7 +961,8 @@ namespace Shop.Infrastructure.Migrations
                                 .HasColumnName("Canonical");
 
                             b1.Property<bool>("IndexPage")
-                                .HasColumnType("bit");
+                                .HasColumnType("bit")
+                                .HasColumnName("SeoData_IndexPage");
 
                             b1.Property<string>("MetaData")
                                 .HasMaxLength(60)
@@ -939,8 +980,9 @@ namespace Shop.Infrastructure.Migrations
                                 .HasColumnName("Keywords");
 
                             b1.Property<string>("Schema")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(2000)
+                                .HasColumnType("nvarchar(2000)")
+                                .HasColumnName("SeoData_Schema");
 
                             b1.HasKey("ProductId");
 

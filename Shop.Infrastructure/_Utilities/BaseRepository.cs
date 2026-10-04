@@ -134,7 +134,46 @@ namespace Shop.Infrastructure._Utilities
         public async Task<int> SaveAsync(
             CancellationToken cancellationToken = default)
         {
-            return await _shopContext.SaveChangesAsync(cancellationToken);
+            try
+            {
+                return await _shopContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
+            {
+                try
+                {
+                    var entries = _shopContext.ChangeTracker.Entries()
+                        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted)
+                        .Select(e => new
+                        {
+                            Type = e.Entity?.GetType().Name,
+                            PrimaryKey = e.Properties.FirstOrDefault(p => p.Metadata.IsPrimaryKey())?.CurrentValue
+                        })
+                        .ToList();
+
+                    var details = entries.Count == 0
+                        ? "(no tracked entries)"
+                        : string.Join("; ", entries.Select(x => $"{x.Type}:{x.PrimaryKey}"));
+
+                    // Minimal diagnostic output to help troubleshooting. Uses Console so it works without extra DI/config.
+                    Console.WriteLine($"[Concurrency] SaveAsync failed. Tracked entries: {details}. Exception: {ex.Message}");
+
+                    if (entries.Count > 0)
+                    {
+                        // If we have at least one entry, throw a domain ConcurrencyException for the first one to provide clearer message upstream.
+                        var first = entries[0];
+                        throw new Common.Domain.Exceptions.ConcurrencyException(first.Type ?? "Entity", first.PrimaryKey ?? "unknown");
+                    }
+                }
+                catch (Exception wrapEx)
+                {
+                    // If enriching fails, throw a RepositoryException with original exception as inner.
+                    throw new Common.Domain.Exceptions.RepositoryException("Concurrency conflict occurred while saving changes.", ex);
+                }
+
+                // If we reach here, rethrow original to satisfy compiler (shouldn't reach because we throw above)
+                throw;
+            }
         }
     }
 }
