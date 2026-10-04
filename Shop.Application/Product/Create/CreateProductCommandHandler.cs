@@ -37,7 +37,7 @@ namespace Shop.Application.Products.Create
                 request.SubCategoryId,
                 request.SecondarySubCategoryId,
                 request.Slug,
-                request.SeoData
+                request.SeoData ?? Common.Domain.ValueObject.SeoData.CreateEmpty()
             );
 
             await _repository.AddAsync(product, cancellationToken);

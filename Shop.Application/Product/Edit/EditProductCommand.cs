@@ -20,7 +20,7 @@ namespace Shop.Application.Products.Edit
         Guid SubCategoryId,
         Guid SecondarySubCategoryId,
         string Slug,
-        SeoData SeoData,
-        Dictionary<string, string> Specifications
+        SeoData? SeoData,
+        Dictionary<string, string>? Specifications
     ) : IBaseCommand;
 }

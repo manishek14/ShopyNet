@@ -53,7 +53,7 @@ namespace Shop.Application.Products.Edit
                 request.SubCategoryId,
                 request.SecondarySubCategoryId,
                 request.Slug,
-                request.SeoData
+                request.SeoData ?? product.SeoData
             );
 
             if (request.Specifications != null && request.Specifications.Count > 0)

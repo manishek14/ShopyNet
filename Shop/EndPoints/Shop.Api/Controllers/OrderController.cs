@@ -1,4 +1,5 @@
 ﻿using Common.Aplication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Order.AddItem;
 using Shop.Application.Order.DecreaseItemCount;
@@ -28,6 +29,7 @@ namespace Shop.Api.Controllers
 
         // Query
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<OrderDto>> GetOrderById(Guid id)
         {
             var order = await _orderFacade.GetOrderById(id);
@@ -36,6 +38,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize]
         public async Task<ActionResult<List<OrderDto>>> GetOrdersByUserId(Guid userId)
         {
             var orders = await _orderFacade.GetOrdersByUserId(userId);
@@ -43,6 +46,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpGet("filter")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OrderFilterData>> GetOrdersByFilter(
             [FromQuery] OrderFilterParams filterParams)
         {
@@ -52,6 +56,7 @@ namespace Shop.Api.Controllers
 
         // Command
         [HttpPost("add-item")]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> AddItem([FromBody] AddOrderItemCommand command)
         {
             var result = await _orderFacade.AddItem(command);
@@ -59,6 +64,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpDelete("remove-item")]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> RemoveItem([FromBody] RemoveOrderItemCommand command)
         {
             var result = await _orderFacade.RemoveItem(command);
@@ -66,6 +72,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("increase-item")]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> IncreaseItemCount([FromBody] IncreaseOrderItemCountCommand command)
         {
             var result = await _orderFacade.IncreaseItemCount(command);
@@ -73,6 +80,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("decrease-item")]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> DecreaseItemCount([FromBody] DecreaseOrderItemCountCommand command)
         {
             var result = await _orderFacade.DecreaseItemCount(command);
@@ -80,6 +88,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("set-address")]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> SetAddress([FromBody] SetOrderAddressCommand command)
         {
             var result = await _orderFacade.SetAddress(command);
@@ -87,6 +96,7 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPut("set-shipping")]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> SetShippingMethod([FromBody] SetOrderShippingMethodCommand command)
         {
             var result = await _orderFacade.SetShippingMethod(command);
@@ -94,11 +104,11 @@ namespace Shop.Api.Controllers
         }
 
         [HttpPost("finally")]
+        [Authorize]
         public async Task<ActionResult<OperationResult>> Finally([FromBody] FinallyOrderCommand command)
         {
             var result = await _orderFacade.Finally(command);
             return result.Status == OperationResultStatus.Success ? Ok(result) : BadRequest(result);
         }
-
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shop.Domain.OrderAgg;
-using Shop.Domain.OrderAgg.ValueObject;
 using System;
 
 namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
@@ -18,19 +17,14 @@ namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
 
             builder.Property(o => o.Status)
                 .IsRequired()
-                .HasConversion<int>();  
+                .HasConversion<int>();
 
             builder.Property(o => o.CreatedAt)
                 .IsRequired()
                 .HasDefaultValueSql("GETDATE()");
 
             builder.Property(o => o.FinallyAt)
-                .IsRequired();
-
-            builder.HasMany(o => o.Items)
-                .WithOne()
-                .HasForeignKey(oi => oi.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .IsRequired(false);
 
             builder.OwnsOne(o => o.Discount, discount =>
             {
@@ -101,6 +95,13 @@ namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
 
             builder.HasIndex(o => o.UserId)
                 .HasDatabaseName("IX_Orders_UserId");
+
+            // Ensure only one pending order per user - create a filtered unique index on UserId when Status = Pending (0)
+            // Note: Status is stored as int due to enum conversion.
+            builder.HasIndex(o => o.UserId)
+                .IsUnique()
+                .HasDatabaseName("UX_Orders_UserId_Pending")
+                .HasFilter("[Status] = 0");
 
             builder.HasIndex(o => o.Status)
                 .HasDatabaseName("IX_Orders_Status");

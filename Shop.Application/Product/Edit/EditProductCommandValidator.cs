@@ -55,19 +55,16 @@ namespace Shop.Application.Products.Edit
                     .When(x => !string.IsNullOrWhiteSpace(x.Slug))
                     .WithMessage("Slug must contain only lowercase letters, numbers, and hyphens");
 
-            RuleFor(x => x.SeoData)
-                .NotNull()
-                    .WithMessage(ValidationMessages.required("SeoData"));
-
+            // SeoData is optional during edit. Validate nested fields only when provided.
             When(x => x.SeoData != null, () =>
             {
-                RuleFor(x => x.SeoData.MetaData)
+                RuleFor(x => x.SeoData!.MetaData)
                     .NotEmpty()
                         .WithMessage(ValidationMessages.required("MetaTitle"))
                     .MaximumLength(60)
                         .WithMessage(ValidationMessages.maxLength("MetaTitle", 60));
 
-                RuleFor(x => x.SeoData.MetaDescription)
+                RuleFor(x => x.SeoData!.MetaDescription)
                     .NotEmpty()
                         .WithMessage(ValidationMessages.required("MetaDescription"))
                     .MaximumLength(160)

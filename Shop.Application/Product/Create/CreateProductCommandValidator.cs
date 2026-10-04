@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Shop.Application.Products.Create
 {
-    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+    public class CreateProductCommandModelValidator : AbstractValidator<CreateProductCommand>
     {
-        public CreateProductCommandValidator()
+        public CreateProductCommandModelValidator()
         {
             RuleFor(x => x.Title)
                 .NotEmpty()
@@ -50,21 +50,14 @@ namespace Shop.Application.Products.Create
                     .When(x => !string.IsNullOrWhiteSpace(x.Slug))
                     .WithMessage("Slug must contain only lowercase letters, numbers, and hyphens");
 
-            RuleFor(x => x.SeoData)
-                .NotNull()
-                    .WithMessage(ValidationMessages.required("SeoData"));
 
             When(x => x.SeoData != null, () =>
             {
                 RuleFor(x => x.SeoData.MetaData)
-                    .NotEmpty()
-                        .WithMessage(ValidationMessages.required("MetaTitle"))
                     .MaximumLength(60)
                         .WithMessage(ValidationMessages.maxLength("MetaTitle", 60));
 
                 RuleFor(x => x.SeoData.MetaDescription)
-                    .NotEmpty()
-                        .WithMessage(ValidationMessages.required("MetaDescription"))
                     .MaximumLength(160)
                         .WithMessage(ValidationMessages.maxLength("MetaDescription", 160));
             });
