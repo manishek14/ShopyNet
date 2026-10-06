@@ -8,6 +8,18 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS: allow client to send Authorization header (used by JWT bearer)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Default", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -77,6 +89,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("Default");
 
 app.UseAuthentication();
 app.UseAuthorization();

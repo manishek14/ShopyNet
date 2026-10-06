@@ -35,14 +35,6 @@ namespace Shop.Api.Controllers
             return CommandResult(result);
         }
 
-        [HttpGet("current")]
-        [Authorize]
-        public async Task<ApiResult<UserDto>> GetCurrentUser()
-        {
-            var user = await _userFacade.GetUserById(UserId);
-            return QueryResult(user);
-        }
-
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ApiResult<UserDto>> GetUserById(Guid id)
