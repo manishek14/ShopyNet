@@ -1,35 +1,42 @@
 ﻿using Common.Aplication;
+using Common.Aplication.SecurityUtil; 
+using Shop.Domain.UserAgg;
 using Shop.Domain.UserAgg.Repository;
 using Shop.Domain.UserAgg.Service;
-using Shop.Domain.UserAgg;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Shop.Application.User.Register
 {
     public class RegisterUserCommandHandler : IBaseCommandHandler<RegisterUserCommand>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IDomainUserService _domainUserService;
+        private readonly IDomainUserService _domainService;
 
         public RegisterUserCommandHandler(
             IUserRepository userRepository,
-            IDomainUserService domainUserService)
+            IDomainUserService domainService)
         {
-            _userRepository = userRepository
-                ?? throw new ArgumentNullException(nameof(userRepository));
-            _domainUserService = domainUserService
-                ?? throw new ArgumentNullException(nameof(domainUserService));
+            _userRepository = userRepository;
+            _domainService = domainService;
         }
 
         public async Task<OperationResult> Handle(
             RegisterUserCommand request,
             CancellationToken cancellationToken)
         {
+            if (request.Password != request.ConfirmPassword)
+                return OperationResult.Error("کلمه‌های عبور یکسان نیستند");
+
+            var hashedPassword = Sha256Hasher.Hash(request.Password);
+
             var user = Domain.UserAgg.User.Register(
-                email: request.Email,
-                phoneNumber: request.PhoneNumber,
-                password: request.Password,
-                domainService: _domainUserService,
-                gender: request.Gender
+                request.Email,
+                request.PhoneNumber,
+                hashedPassword,   
+                _domainService,
+                request.Gender
             );
 
             await _userRepository.AddAsync(user, cancellationToken);

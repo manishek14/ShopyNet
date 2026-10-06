@@ -1,20 +1,24 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Common.Aplication.SecurityUtil;
-
-public class Sha256Hasher
+namespace Common.Aplication.SecurityUtil
 {
-    public static string Hash(string inputValue)
+    public static class Sha256Hasher
     {
-        using var sha256 = SHA256.Create();
-        var originalBytes = Encoding.Default.GetBytes(inputValue);
-        var encodedBytes = sha256.ComputeHash(originalBytes);
-        return Convert.ToBase64String(encodedBytes);
-    }
-    public static bool IsCompare(string hashText, string rawText)
-    {
-        var hash = Hash(rawText);
-        return hashText == hash;
+        public static string Hash(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
+
+        public static bool IsCompare(string hash, string input)
+        {
+            return Hash(input) == hash;
+        }
     }
 }
