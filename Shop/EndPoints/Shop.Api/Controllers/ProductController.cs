@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Common.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Products.AddImage;
 using Shop.Application.Products.Create;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Api.Controllers
 {
+    [EnableRateLimiting("ApiPolicy")]
     public class ProductController : ApiController
     {
         private readonly IProductFacade _productFacade;

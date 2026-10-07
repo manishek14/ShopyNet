@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Shop.Application.Role.Create;
 using Shop.Application.Role.Edit;
 using Shop.Application.Role.SetPermissions;
@@ -13,6 +14,7 @@ namespace Shop.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("ApiPolicy")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleFacade _roleFacade;

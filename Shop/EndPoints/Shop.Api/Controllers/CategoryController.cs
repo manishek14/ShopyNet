@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Shop.Application.Category.AddChild;
 using Shop.Application.Category.Create;
 using Shop.Application.Category.Edit;
@@ -14,6 +15,7 @@ namespace Shop.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("ApiPolicy")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryFacade _categoryFacade;

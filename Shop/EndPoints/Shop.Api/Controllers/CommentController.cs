@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Shop.Application.Comment.ChangeStatus;
 using Shop.Application.Comment.Create;
 using Shop.Application.Comment.Edit;
@@ -14,6 +15,7 @@ namespace Shop.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("ApiPolicy")]
     public class CommentController : ControllerBase
     {
         private readonly ICommentFacade _commentFacade;
