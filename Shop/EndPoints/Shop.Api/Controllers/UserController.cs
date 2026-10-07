@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Common.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.User.AddAddress;
 using Shop.Application.User.ChangePassword;
@@ -18,6 +19,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Api.Controllers
 {
+    [EnableRateLimiting("ApiPolicy")]
     public class UserController : ApiController
     {
         private readonly IUserFacade _userFacade;

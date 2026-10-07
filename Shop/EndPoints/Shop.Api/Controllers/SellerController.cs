@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Shop.Application.Sellers.AddInventory;
 using Shop.Application.Sellers.ChangeStatus;
 using Shop.Application.Sellers.Create;
@@ -17,6 +18,7 @@ namespace Shop.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("ApiPolicy")]
     public class SellerController : ControllerBase
     {
         private readonly ISellerFacade _sellerFacade;

@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Shop.Application.Order.AddItem;
 using Shop.Application.Order.DecreaseItemCount;
 using Shop.Application.Order.Finally;
@@ -18,6 +19,7 @@ namespace Shop.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("ApiPolicy")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderFacade _orderFacade;

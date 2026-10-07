@@ -2,6 +2,7 @@
 using Common.Aplication.SecurityUtil;
 using Common.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Api.Infrastructure.JwtUtil;
 using Shop.Api.ViewModels.Auth;
@@ -17,6 +18,7 @@ using UAParser;
 
 namespace Shop.Api.Controllers
 {
+    [EnableRateLimiting("ApiPolicy")]
     public class AuthController : ApiController
     {
         private readonly IUserFacade _userFacade;
