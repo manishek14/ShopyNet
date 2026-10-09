@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Common.Domain;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Shop.Domain.AuditAgg;
 using Shop.Domain.CategoryAgg;
 using Shop.Domain.CommentAgg;
 using Shop.Domain.OrderAgg;
@@ -6,8 +9,7 @@ using Shop.Domain.ProductAgg;
 using Shop.Domain.RoleAgg;
 using Shop.Domain.SellerAgg;
 using Shop.Domain.UserAgg;
-using Common.Domain;
-using System.Linq.Expressions;
+using Shop.Infrastructure.Persistent.Ef.AuditAgg;
 
 // Configurationها
 using Shop.Infrastructure.Persistent.Ef.CategoryAgg;
@@ -17,7 +19,7 @@ using Shop.Infrastructure.Persistent.Ef.ProductAgg;
 using Shop.Infrastructure.Persistent.Ef.RoleAgg;
 using Shop.Infrastructure.Persistent.Ef.SellerAgg;
 using Shop.Infrastructure.Persistent.Ef.UserAgg;
-using Microsoft.Extensions.Configuration;
+using System.Linq.Expressions;
 
 namespace Shop.Infrastructure.Persistent.Ef
 {
@@ -46,6 +48,7 @@ namespace Shop.Infrastructure.Persistent.Ef
         }
 
         // DbSet
+        public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -91,6 +94,7 @@ namespace Shop.Infrastructure.Persistent.Ef
                     var filter = Expression.Lambda(filterBody, parameter);
 
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
+                    modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
                 }
             }
 

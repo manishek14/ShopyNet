@@ -16,6 +16,8 @@ namespace Common.AspNetCore
 
         protected bool IsLoggedIn => User.IsLoggedIn();
 
+        protected Guid? UserIdOrNull => User?.Identity?.IsAuthenticated == true ? User.GetUserId() : null;
+
         protected ApiResult CommandResult(OperationResult result)
         {
             return new ApiResult()
