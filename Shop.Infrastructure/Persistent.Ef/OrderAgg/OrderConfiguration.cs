@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shop.Domain.OrderAgg;
-using System;
 
 namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
 {
@@ -12,102 +11,47 @@ namespace Shop.Infrastructure.Persistent.Ef.OrderAgg
             builder.ToTable("Orders", "Order");
             builder.HasKey(o => o.Id);
 
-            builder.Property(o => o.UserId)
-                .IsRequired();
+            builder.Property(o => o.UserId).IsRequired();
+            builder.Property(o => o.Status).IsRequired().HasConversion<int>();
+            builder.Property(o => o.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+            builder.Property(o => o.FinallyAt).IsRequired(false);
 
-            builder.Property(o => o.Status)
-                .IsRequired()
-                .HasConversion<int>();
-
-            builder.Property(o => o.CreatedAt)
-                .IsRequired()
-                .HasDefaultValueSql("GETDATE()");
-
-            builder.Property(o => o.FinallyAt)
-                .IsRequired(false);
-
+            // Discount (Value Object — Owned)
             builder.OwnsOne(o => o.Discount, discount =>
             {
                 discount.Property(d => d.DiscountTitle)
                     .HasColumnName("DiscountTitle")
                     .HasMaxLength(200)
-                    .IsRequired();
+                    .IsRequired(false); 
 
                 discount.Property(d => d.DiscountAmount)
                     .HasColumnName("DiscountAmount")
-                    .IsRequired();
+                    .IsRequired();     
             });
 
-            builder.OwnsOne(o => o.Address, address =>
-            {
-                address.Property(a => a.Province)
-                    .HasColumnName("Province")
-                    .HasMaxLength(100)
-                    .IsRequired();
+            // Address (Entity — HasOne)
+            builder.HasOne(o => o.Address)
+                .WithOne(a => a.Order)
+                .HasForeignKey<OrderAddress>(a => a.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                address.Property(a => a.City)
-                    .HasColumnName("City")
-                    .HasMaxLength(100)
-                    .IsRequired();
-
-                address.Property(a => a.PostalCode)
-                    .HasColumnName("PostalCode")
-                    .HasMaxLength(10)
-                    .IsRequired();
-
-                address.Property(a => a.MailingAddress)
-                    .HasColumnName("MailingAddress")
-                    .HasMaxLength(500)
-                    .IsRequired();
-
-                address.Property(a => a.PhoneNumber)
-                    .HasColumnName("PhoneNumber")
-                    .HasMaxLength(11)
-                    .IsRequired();
-
-                address.Property(a => a.Name)
-                    .HasColumnName("Name")
-                    .HasMaxLength(100)
-                    .IsRequired();
-
-                address.Property(a => a.Family)
-                    .HasColumnName("Family")
-                    .HasMaxLength(100)
-                    .IsRequired();
-
-                address.Property(a => a.NationalCode)
-                    .HasColumnName("NationalCode")
-                    .HasMaxLength(10)
-                    .IsRequired();
-            });
-
+            // ShippingMethod (Value Object — Owned)
             builder.OwnsOne(o => o.ShippingMethod, shipping =>
             {
                 shipping.Property(s => s.ShippingType)
                     .HasColumnName("ShippingType")
                     .HasMaxLength(100)
-                    .IsRequired();
+                    .IsRequired(false);
 
                 shipping.Property(s => s.ShippingCost)
                     .HasColumnName("ShippingCost")
-                    .IsRequired();
+                    .IsRequired();  
             });
 
-            builder.HasIndex(o => o.UserId)
-                .HasDatabaseName("IX_Orders_UserId");
-
-            // Ensure only one pending order per user - create a filtered unique index on UserId when Status = Pending (0)
-            // Note: Status is stored as int due to enum conversion.
-            builder.HasIndex(o => o.UserId)
-                .IsUnique()
-                .HasDatabaseName("UX_Orders_UserId_Pending")
-                .HasFilter("[Status] = 0");
-
-            builder.HasIndex(o => o.Status)
-                .HasDatabaseName("IX_Orders_Status");
-
-            builder.HasIndex(o => o.CreatedAt)
-                .HasDatabaseName("IX_Orders_CreatedAt");
+            // Indexes
+            builder.HasIndex(o => o.UserId).HasDatabaseName("IX_Orders_UserId");
+            builder.HasIndex(o => o.Status).HasDatabaseName("IX_Orders_Status");
+            builder.HasIndex(o => o.CreatedAt).HasDatabaseName("IX_Orders_CreatedAt");
         }
     }
 }
