@@ -6,8 +6,10 @@ using Shop.Domain.ProductAgg;
 using Shop.Domain.RoleAgg;
 using Shop.Domain.SellerAgg;
 using Shop.Domain.UserAgg;
+using Common.Domain;
+using System.Linq.Expressions;
 
-// ✅ Configurationها
+// Configurationها
 using Shop.Infrastructure.Persistent.Ef.CategoryAgg;
 using Shop.Infrastructure.Persistent.Ef.CommentAgg;
 using Shop.Infrastructure.Persistent.Ef.OrderAgg;
@@ -15,6 +17,7 @@ using Shop.Infrastructure.Persistent.Ef.ProductAgg;
 using Shop.Infrastructure.Persistent.Ef.RoleAgg;
 using Shop.Infrastructure.Persistent.Ef.SellerAgg;
 using Shop.Infrastructure.Persistent.Ef.UserAgg;
+using Microsoft.Extensions.Configuration;
 
 namespace Shop.Infrastructure.Persistent.Ef
 {
@@ -27,13 +30,22 @@ namespace Shop.Infrastructure.Persistent.Ef
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(
-                    "Data Source=DESKTOP-6NC34ET;Database=ShopyNet;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=true;"
-                );
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                    .AddUserSecrets<ShopContext>() 
+                    .AddEnvironmentVariables() 
+                    .Build();
+
+                var connectionString = configuration.GetConnectionString("DefaultConnection")
+                    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+                optionsBuilder.UseSqlServer(connectionString);
             }
         }
 
-        // DbSets
+        // DbSet
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -50,15 +62,38 @@ namespace Shop.Infrastructure.Persistent.Ef
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<UserToken> UserTokens { get; set; }
 
-        // Enums configuration
+        // Enums Configuration
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Properties<Enum>().HaveConversion<int>();
         }
 
-        // Configuration
+        //  Configurations + Global Query Filter
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Global Query Filter for Soft Delete
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+                {
+                    var parameter = Expression.Parameter(entityType.ClrType, "e");
+
+                    var property = Expression.Property(
+                        parameter,
+                        nameof(BaseEntity.IsDeleted)
+                    );
+
+                    var filterBody = Expression.Equal(
+                        property,
+                        Expression.Constant(false)
+                    );
+
+                    var filter = Expression.Lambda(filterBody, parameter);
+
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
+                }
+            }
+
             // Gender 
             modelBuilder.Entity<User>()
                 .Property(u => u.Gender)
@@ -93,6 +128,9 @@ namespace Shop.Infrastructure.Persistent.Ef
             // SellerAgg
             modelBuilder.ApplyConfiguration(new SellerConfiguration());
             modelBuilder.ApplyConfiguration(new SellerInventoryConfiguration());
+
+            // Ignore BaseDomainEvent
+            modelBuilder.Ignore<BaseDomainEvent>();
 
             base.OnModelCreating(modelBuilder);
         }

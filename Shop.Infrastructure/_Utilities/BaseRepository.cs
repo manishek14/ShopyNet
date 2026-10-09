@@ -120,7 +120,8 @@ namespace Shop.Infrastructure._Utilities
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            _dbSet.Remove(entity);
+            entity.Delete();   
+            _dbSet.Update(entity);
         }
 
         public void RemoveRange(IEnumerable<TEntity> entities)
@@ -128,7 +129,11 @@ namespace Shop.Infrastructure._Utilities
             if (entities == null)
                 throw new ArgumentNullException(nameof(entities));
 
-            _dbSet.RemoveRange(entities);
+            foreach (var entity in entities)
+            {
+                entity.Delete();
+            }
+            _dbSet.UpdateRange(entities);
         }
 
         public async Task<int> SaveAsync(

@@ -12,7 +12,7 @@ using Shop.Domain.RoleAgg;
 using Shop.Domain.RoleAgg.Services;
 using Shop.Domain.SellerAgg;
 using Shop.Domain.SellerAgg.Services;
-using Shop.Domain.UserAgg.Repository;  // ✅ اضافه کن
+using Shop.Domain.UserAgg.Repository;
 using Shop.Domain.UserAgg.Service;
 using Shop.Infrastructure.CategoryAgg.Service;
 using Shop.Infrastructure.CommentAgg.Service;
@@ -24,7 +24,7 @@ using Shop.Infrastructure.Persistent.Ef.OrderAgg;
 using Shop.Infrastructure.Persistent.Ef.ProductAgg;
 using Shop.Infrastructure.Persistent.Ef.RoleAgg;
 using Shop.Infrastructure.Persistent.Ef.SellerAgg;
-using Shop.Infrastructure.Persistent.Ef.UserAgg;  // ✅ اضافه کن
+using Shop.Infrastructure.Persistent.Ef.UserAgg;
 using Shop.Infrastructure.ProductAgg.Service;
 using Shop.Infrastructure.RoleAgg.Service;
 using Shop.Infrastructure.SellerAgg.Service;
@@ -43,7 +43,7 @@ namespace Shop.Infrastructure
             services.AddDbContext<ShopContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // ✅ Repositoryها
+            // Repository
             services.AddScoped<IUserRepository, UserRepository>();  
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -52,7 +52,7 @@ namespace Shop.Infrastructure
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ISellerRepository, SellerRepository>();
 
-            // ✅ Domain Serviceها
+            // Domain Service
             services.AddScoped<IDomainUserService, DomainUserService>();
             services.AddScoped<IProductDomainService, ProductDomainService>();
             services.AddScoped<IOrderDomainService, OrderDomainService>();
@@ -61,7 +61,7 @@ namespace Shop.Infrastructure
             services.AddScoped<ICategoryDomainService, CategoryDomainService>();
             services.AddScoped<ICommentDomainService, CommentDomainService>();
 
-            // ✅ Password Hasher
+            // Password Hasher
             services.AddScoped<IPasswordHasher, PasswordHasher>();
         }
     }
