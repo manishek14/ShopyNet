@@ -3,6 +3,7 @@ using Common.Application.Validation;
 using Shop.Application._Utilities;
 using Shop.Domain.ProductAgg;
 using Shop.Domain.ProductAgg.Repository;
+using Shop.Application.Caching;
 
 namespace Shop.Application.Products.Edit
 {
@@ -10,15 +11,18 @@ namespace Shop.Application.Products.Edit
     {
         private readonly IProductRepository _repository;
         private readonly IDirectories _localFileService;
+        private readonly ICacheService _cache;
 
         public EditProductCommandHandler(
             IProductRepository repository,
-            IDirectories localFileService)
+            IDirectories localFileService,
+            ICacheService cache)
         {
             _repository = repository
                 ?? throw new ArgumentNullException(nameof(repository));
             _localFileService = localFileService
                 ?? throw new ArgumentNullException(nameof(localFileService));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<OperationResult> Handle(
@@ -71,6 +75,12 @@ namespace Shop.Application.Products.Edit
 
             _repository.Update(product);
             await _repository.SaveAsync(cancellationToken);
+
+            // ✅ Cache invalidation
+            await _cache.RemoveAsync(CacheKeys.ProductById(product.Id), cancellationToken);
+            if (!string.IsNullOrWhiteSpace(product.Slug))
+                await _cache.RemoveAsync(CacheKeys.ProductBySlug(product.Slug), cancellationToken);
+            await _cache.RemoveByPatternAsync(CacheKeys.ProductsByFilterPattern, cancellationToken);
 
             return OperationResult.Success();
         }
