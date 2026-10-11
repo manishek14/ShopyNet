@@ -8,10 +8,12 @@
 
   <ItemGroup>
 	  <PackageReference Include="MediatR" Version="14.2.0" />
+	  <PackageReference Include="StackExchange.Redis" Version="3.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.Query\Common.Query.csproj" />
+    <ProjectReference Include="..\Common\Common.Aplication\Common.Aplication.csproj" />
     <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
     <ProjectReference Include="..\Shop.Infrastructure\Shop.Infrastructure.csproj" />
   </ItemGroup>

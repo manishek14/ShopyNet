@@ -1,6 +1,7 @@
 ﻿using Common.Aplication;
 using Common.Application.Validation;
 using Shop.Domain.RoleAgg;
+using Shop.Application.Caching;
 
 namespace Shop.Application.Role.Edit
 {
@@ -8,10 +9,11 @@ namespace Shop.Application.Role.Edit
     {
         private readonly IRoleRepository _roleRepository;
 
-        public EditRoleCommandHandler(IRoleRepository roleRepository)
+        public EditRoleCommandHandler(IRoleRepository roleRepository, ICacheService cache)
         {
             _roleRepository = roleRepository
                 ?? throw new ArgumentNullException(nameof(roleRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<OperationResult> Handle(

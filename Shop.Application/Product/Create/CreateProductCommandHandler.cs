@@ -2,6 +2,7 @@
 using Shop.Application._Utilities;
 using Shop.Domain.ProductAgg;
 using Shop.Domain.ProductAgg.Repository;
+using Shop.Application.Caching;
 
 namespace Shop.Application.Products.Create
 {
@@ -9,15 +10,18 @@ namespace Shop.Application.Products.Create
     {
         private readonly IProductRepository _repository;
         private readonly IDirectories _localFileService;
+        private readonly ICacheService _cache;
 
         public CreateProductCommandHandler(
             IProductRepository repository,
-            IDirectories localFileService)
+            IDirectories localFileService,
+            ICacheService cache)
         {
             _repository = repository
                 ?? throw new ArgumentNullException(nameof(repository));
             _localFileService = localFileService
                 ?? throw new ArgumentNullException(nameof(localFileService));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<OperationResult> Handle(
@@ -59,6 +63,9 @@ namespace Shop.Application.Products.Create
             }
 
             await _repository.SaveAsync(cancellationToken);
+
+            // ✅ Cache invalidation
+            await _cache.RemoveByPatternAsync(CacheKeys.ProductsByFilterPattern, cancellationToken);
 
             return OperationResult.Success();
         }

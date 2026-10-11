@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Domain.UserAgg;
-using Shop.Domain.UserAgg;
 using Shop.Infrastructure._Utilities;
 using Shop.Infrastructure.Persistent.Ef;
 using System;

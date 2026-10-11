@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Domain.CommentAgg;
-using Shop.Domain.CommentAgg;
 using Shop.Infrastructure._Utilities;
 using Shop.Infrastructure.Persistent.Ef;
 using System;

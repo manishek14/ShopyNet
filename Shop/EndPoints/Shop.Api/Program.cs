@@ -10,8 +10,10 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Shop.Api.Infrastructure.JwtUtil;
 using Shop.Config;
+using Shop.Infrastructure.Caching;
 using Shop.Infrastructure.Persistent.Ef;
 using Shop.Presentation.Facade;
+using StackExchange.Redis;
 using System.Text;
 using System.Threading.RateLimiting;
 
@@ -168,6 +170,21 @@ try
                     Encoding.UTF8.GetBytes(jwtConfig.SignInKey))
             };
         });
+
+    // Redis Caching
+    var redisSettings = builder.Configuration.GetSection("Redis").Get<RedisSettings>()
+        ?? new RedisSettings { ConnectionString = "localhost:6379" };
+
+    builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+        ConnectionMultiplexer.Connect(redisSettings.ConnectionString));
+
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = redisSettings.ConnectionString;
+        options.InstanceName = redisSettings.InstanceName;
+    });
+
+    builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("Redis"));
 
     builder.Services.RegisterShopDependency(connectionString);
     builder.Services.InitFacadeDependency();
