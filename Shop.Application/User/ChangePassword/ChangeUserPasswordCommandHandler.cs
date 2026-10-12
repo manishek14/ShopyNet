@@ -2,6 +2,7 @@
 using Common.Application.Validation;
 using Shop.Domain.UserAgg.Repository;
 using Shop.Domain.UserAgg.Service;
+using Shop.Application.Caching;
 
 namespace Shop.Application.User.ChangePassword
 {
@@ -9,15 +10,18 @@ namespace Shop.Application.User.ChangePassword
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly ICacheService _cache;
 
         public ChangeUserPasswordCommandHandler(
             IUserRepository userRepository,
-            IPasswordHasher passwordHasher)
+            IPasswordHasher passwordHasher,
+            ICacheService cache)
         {
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _passwordHasher = passwordHasher
                 ?? throw new ArgumentNullException(nameof(passwordHasher));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<OperationResult> Handle(
@@ -42,6 +46,9 @@ namespace Shop.Application.User.ChangePassword
 
             _userRepository.Update(user);
             await _userRepository.SaveAsync(cancellationToken);
+
+            // ✅ Invalidate user cache
+            await _cache.RemoveAsync(CacheKeys.UserById(user.Id), cancellationToken);
 
             return OperationResult.Success();
         }

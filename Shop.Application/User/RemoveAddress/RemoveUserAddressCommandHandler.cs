@@ -1,17 +1,20 @@
 ﻿using Common.Aplication;
 using Common.Application.Validation;
 using Shop.Domain.UserAgg.Repository;
+using Shop.Application.Caching;
 
 namespace Shop.Application.User.RemoveAddress
 {
     public class RemoveUserAddressCommandHandler : IBaseCommandHandler<RemoveUserAddressCommand>
     {
         private readonly IUserRepository _userRepository;
+        private readonly ICacheService _cache;
 
-        public RemoveUserAddressCommandHandler(IUserRepository userRepository)
+        public RemoveUserAddressCommandHandler(IUserRepository userRepository, ICacheService cache)
         {
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<OperationResult> Handle(
@@ -33,7 +36,10 @@ namespace Shop.Application.User.RemoveAddress
             user.RemoveAddress(request.AddressId);
 
             _userRepository.Update(user);
-            await _userRepository.SaveAsync(cancellationToken);
+            await _user_repository.SaveAsync(cancellationToken);
+
+            // ✅ Invalidate user addresses cache
+            await _cache.RemoveAsync(CacheKeys.UserAddresses(user.Id), cancellationToken);
 
             return OperationResult.Success();
         }
