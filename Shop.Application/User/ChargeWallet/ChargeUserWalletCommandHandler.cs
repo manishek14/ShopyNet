@@ -2,6 +2,7 @@
 using Common.Application.Validation;
 using Shop.Domain.UserAgg;
 using Shop.Domain.UserAgg.Repository;
+using Shop.Application.Caching;
 
 namespace Shop.Application.User.ChargeWallet
 {
@@ -9,10 +10,11 @@ namespace Shop.Application.User.ChargeWallet
     {
         private readonly IUserRepository _userRepository;
 
-        public ChargeUserWalletCommandHandler(IUserRepository userRepository)
+        public ChargeUserWalletCommandHandler(IUserRepository userRepository, ICacheService cache)
         {
-            _userRepository = userRepository
+            _user_repository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<OperationResult> Handle(
@@ -34,8 +36,11 @@ namespace Shop.Application.User.ChargeWallet
 
             user.ChargeWallet(wallet);
 
-            _userRepository.Update(user);
-            await _userRepository.SaveAsync(cancellationToken);
+            _user_repository.Update(user);
+            await _user_repository.SaveAsync(cancellationToken);
+
+            // ✅ Invalidate user wallets cache
+            await _cache.RemoveAsync(CacheKeys.UserWallets(user.Id), cancellationToken);
 
             return OperationResult.Success();
         }
