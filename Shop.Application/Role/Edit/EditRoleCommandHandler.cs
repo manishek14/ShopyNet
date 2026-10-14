@@ -8,6 +8,7 @@ namespace Shop.Application.Role.Edit
     public class EditRoleCommandHandler : IBaseCommandHandler<EditRoleCommand>
     {
         private readonly IRoleRepository _roleRepository;
+        private readonly ICacheService _cache;
 
         public EditRoleCommandHandler(IRoleRepository roleRepository, ICacheService cache)
         {

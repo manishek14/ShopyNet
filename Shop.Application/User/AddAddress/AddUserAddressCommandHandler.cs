@@ -13,7 +13,7 @@ namespace Shop.Application.User.AddAddress
 
         public AddUserAddressCommandHandler(IUserRepository userRepository, ICacheService cache)
         {
-            _user_repository = userRepository
+            _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }

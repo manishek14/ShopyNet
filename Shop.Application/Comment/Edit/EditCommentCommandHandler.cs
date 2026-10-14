@@ -10,10 +10,11 @@ namespace Shop.Application.Comment.Edit
         private readonly ICommentRepository _commentRepository;
         private readonly ICacheService _cache;
 
-        public EditCommentCommandHandler(ICommentRepository commentRepository)
+        public EditCommentCommandHandler(ICommentRepository commentRepository, ICacheService cache)
         {
             _commentRepository = commentRepository
                 ?? throw new ArgumentNullException(nameof(commentRepository));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<OperationResult> Handle(

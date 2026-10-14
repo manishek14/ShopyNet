@@ -2,11 +2,12 @@
 using Common.Aplication.SecurityUtil;
 using Common.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Shop.Api.Infrastructure.JwtUtil;
 using Shop.Api.ViewModels.Auth;
 using Shop.Application.User.AddToken;
+using Shop.Application.User.ConfirmEmail;
 using Shop.Application.User.Register;
 using Shop.Application.User.RemoveToken;
 using Shop.Domain.UserAgg.Enums;
@@ -58,7 +59,7 @@ namespace Shop.Api.Controllers
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult<ApiResult<LoginResultDto>>> Login(
-            [FromBody] LoginViewModel loginViewModel)
+        [FromBody] LoginViewModel loginViewModel)
         {
             var user = await _userFacade.GetUserByPhoneNumber(loginViewModel.PhoneNumber);
             if (user == null)
@@ -69,6 +70,9 @@ namespace Shop.Api.Controllers
 
             if (!user.IsActive)
                 return BadRequest("حساب کاربری شما غیرفعال است");
+
+            if (!user.IsEmailConfirmed)
+                return BadRequest("لطفاً ابتدا ایمیل خود را تأیید کنید");
 
             var loginResult = await AddTokenAndGenerateJwt(user);
             return Ok(loginResult);
@@ -96,6 +100,20 @@ namespace Shop.Api.Controllers
 
             var loginResult = await AddTokenAndGenerateJwt(user);
             return Ok(loginResult);
+        }
+
+        [HttpGet("confirm-email")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiResult>> ConfirmEmail(
+        [FromQuery] Guid userId,
+        [FromQuery] string token)
+        {
+            var result = await _userFacade.ConfirmEmail(new ConfirmEmailCommand(userId, token));
+
+            if (result.Status == OperationResultStatus.Success)
+                return Ok(new ApiResult { IsSuccess = true });
+
+            return BadRequest(result.Message);
         }
 
         [HttpDelete("logout")]
