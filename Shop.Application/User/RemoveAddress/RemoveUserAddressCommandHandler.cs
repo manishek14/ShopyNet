@@ -36,7 +36,7 @@ namespace Shop.Application.User.RemoveAddress
             user.RemoveAddress(request.AddressId);
 
             _userRepository.Update(user);
-            await _user_repository.SaveAsync(cancellationToken);
+            await _userRepository.SaveAsync(cancellationToken);
 
             // ✅ Invalidate user addresses cache
             await _cache.RemoveAsync(CacheKeys.UserAddresses(user.Id), cancellationToken);

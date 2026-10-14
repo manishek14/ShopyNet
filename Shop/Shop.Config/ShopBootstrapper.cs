@@ -2,10 +2,13 @@
 using Common.Aplication.FileUtil.Services;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Application._Utilities;
 using Shop.Application.Audit;
-using Microsoft.AspNetCore.Http;
+using Shop.Application.Caching;
+using Common.Application.Email;
 using Shop.Domain.CategoryAgg.Services;
 using Shop.Domain.CommentAgg.Services;
 using Shop.Domain.OrderAgg.Services;
@@ -14,14 +17,17 @@ using Shop.Domain.RoleAgg.Services;
 using Shop.Domain.SellerAgg.Services;
 using Shop.Domain.UserAgg.Service;
 using Shop.Infrastructure;
+using Shop.Infrastructure.Caching;
 using Shop.Infrastructure.CategoryAgg.Service;
 using Shop.Infrastructure.CommentAgg.Service;
+using Shop.Infrastructure.Email;
 using Shop.Infrastructure.OrderAgg.Service;
 using Shop.Infrastructure.ProductAgg.Service;
 using Shop.Infrastructure.RoleAgg.Service;
 using Shop.Infrastructure.SellerAgg.Service;
 using Shop.Infrastructure.UserAgg.Service;
 using Shop.Query.Category.GetList;
+using StackExchange.Redis;
 
 namespace Shop.Config
 {
@@ -29,7 +35,8 @@ namespace Shop.Config
     {
         public static void RegisterShopDependency(
             this IServiceCollection services,
-            string connectionString)
+            string connectionString,
+            IConfiguration configuration)
         {
             InfrastructureBootstrapper.Init(services, connectionString);
 
@@ -48,6 +55,25 @@ namespace Shop.Config
             services.AddHttpContextAccessor();
 
             RegisterDomainServices(services);
+
+            // Redis & Cache registration
+            var redisSettings = configuration.GetSection("Redis").Get<RedisSettings>()
+                ?? new RedisSettings { ConnectionString = "localhost:6379" };
+
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+                ConnectionMultiplexer.Connect(redisSettings.ConnectionString));
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisSettings.ConnectionString;
+                options.InstanceName = redisSettings.InstanceName;
+            });
+
+            services.Configure<RedisSettings>(configuration.GetSection("Redis"));
+            services.AddScoped<ICacheService, RedisCacheService>();
+
+            services.Configure<EmailSettings>(configuration.GetSection("Email"));
+            services.AddScoped<IEmailService, EmailService>();
         }
 
         private static void RegisterDomainServices(IServiceCollection services)
@@ -60,6 +86,7 @@ namespace Shop.Config
             services.AddScoped<IRoleDomainService, RoleDomainService>();
             services.AddScoped<ICategoryDomainService, CategoryDomainService>();
             services.AddScoped<ICommentDomainService, CommentDomainService>();
+
         }
     }
 }

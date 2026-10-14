@@ -3,8 +3,10 @@ using Shop.Application.User.AddAddress;
 using Shop.Application.User.AddToken;
 using Shop.Application.User.ChangePassword;
 using Shop.Application.User.ChargeWallet;
+using Shop.Application.User.ConfirmEmail;
 using Shop.Application.User.Edit;
 using Shop.Application.User.EditAddress;
+using Shop.Application.User.GenerateEmailToken;
 using Shop.Application.User.Register;
 using Shop.Application.User.RemoveAddress;
 using Shop.Application.User.RemoveToken;
@@ -37,6 +39,8 @@ namespace Shop.Presentation.Facade.User
         Task<UserFilterData> GetUsersByFilter(UserFilterParams filterParams);
         Task<UserTokenDto> GetUserTokenByJwtToken(string hashJwtToken);
         Task<UserTokenDto> GetUserTokenByRefreshToken(string hashRefreshToken);
+        Task<OperationResult> GenerateEmailConfirmationToken(GenerateEmailConfirmationTokenCommand command);
+        Task<OperationResult> ConfirmEmail(ConfirmEmailCommand command);
 
     }
 }

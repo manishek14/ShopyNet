@@ -186,7 +186,7 @@ try
 
     builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("Redis"));
 
-    builder.Services.RegisterShopDependency(connectionString);
+    builder.Services.RegisterShopDependency(connectionString, builder.Configuration);
     builder.Services.InitFacadeDependency();
 
     // Health Checks

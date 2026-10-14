@@ -19,7 +19,10 @@ namespace Shop.Domain.UserAgg
             string email,
             string phoneNumber,
             string password,
-            Gender gender)
+            Gender gender,
+            bool isEmailConfirmed,
+            string? emailConfirmationToken,
+            DateTime? emailConfirmationTokenExpireAt)
         {
             Name = name;
             Family = family;
@@ -27,6 +30,9 @@ namespace Shop.Domain.UserAgg
             PhoneNumber = phoneNumber;
             Password = password;
             Gender = gender;
+            IsEmailConfirmed = isEmailConfirmed;
+            EmailConfirmationToken = emailConfirmationToken;
+            EmailConfirmationTokenExpireAt = emailConfirmationTokenExpireAt;
 
             UserRoles = new List<UserRole>();
             Wallets = new List<Wallet>();
@@ -47,6 +53,9 @@ namespace Shop.Domain.UserAgg
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
         public bool IsActive { get; private set; } = true;
+        public bool IsEmailConfirmed { get; private set; }
+        public string? EmailConfirmationToken { get; private set; }
+        public DateTime? EmailConfirmationTokenExpireAt { get; private set; }
 
         public static User Register(
             string email,
@@ -64,7 +73,10 @@ namespace Shop.Domain.UserAgg
                 email: email,
                 phoneNumber: phoneNumber,
                 password: password,
-                gender: gender
+                gender: gender,
+                isEmailConfirmed: false,
+                emailConfirmationToken: null,
+                emailConfirmationTokenExpireAt: null
             );
         }
 
@@ -172,6 +184,41 @@ namespace Shop.Domain.UserAgg
             UpdatedAt = DateTime.Now;
         }
 
+        public void GenerateEmailConfirmationToken(string token, DateTime expireAt)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                throw new InvalidDataException("Token cannot be empty.");
+
+            EmailConfirmationToken = token;
+            EmailConfirmationTokenExpireAt = expireAt;
+            UpdatedAt = DateTime.Now;
+        }
+
+        public void ConfirmEmail()
+        {
+            if (IsEmailConfirmed)
+                throw new InvalidOperationException("Email is already confirmed.");
+
+            IsEmailConfirmed = true;
+            EmailConfirmationToken = null;
+            EmailConfirmationTokenExpireAt = null;
+            UpdatedAt = DateTime.Now;
+        }
+
+        public bool IsEmailConfirmationTokenValid(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                return false;
+
+            if (EmailConfirmationToken != token)
+                return false;
+
+            if (EmailConfirmationTokenExpireAt == null || EmailConfirmationTokenExpireAt < DateTime.Now)
+                return false;
+
+            return true;
+        }
+
         private static void Guard(
             string email,
             string phoneNumber,
@@ -200,7 +247,5 @@ namespace Shop.Domain.UserAgg
                     throw new InvalidDataException("Email already exists!");
             }
         }
-
-
     }
 }

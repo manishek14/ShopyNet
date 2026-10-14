@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Query.Category.GetList
 {
-    internal class GetCategoriesListQueryHandler
+    public class GetCategoriesListQueryHandler
         : IBaseQueryHandler<GetCategoriesListQuery, List<CategoryWithChildsDto>>
     {
         private readonly ShopContext _shopContext;

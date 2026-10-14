@@ -693,6 +693,12 @@ namespace Shop.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailConfirmationTokenExpireAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Family")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -706,6 +712,9 @@ namespace Shop.Infrastructure.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")

@@ -9,10 +9,11 @@ namespace Shop.Application.User.ChargeWallet
     public class ChargeUserWalletCommandHandler : IBaseCommandHandler<ChargeUserWalletCommand>
     {
         private readonly IUserRepository _userRepository;
+        private readonly ICacheService _cache;
 
         public ChargeUserWalletCommandHandler(IUserRepository userRepository, ICacheService cache)
         {
-            _user_repository = userRepository
+            _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
@@ -36,8 +37,8 @@ namespace Shop.Application.User.ChargeWallet
 
             user.ChargeWallet(wallet);
 
-            _user_repository.Update(user);
-            await _user_repository.SaveAsync(cancellationToken);
+            _userRepository.Update(user);
+            await _userRepository.SaveAsync(cancellationToken);
 
             // ✅ Invalidate user wallets cache
             await _cache.RemoveAsync(CacheKeys.UserWallets(user.Id), cancellationToken);

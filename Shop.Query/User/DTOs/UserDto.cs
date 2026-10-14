@@ -15,7 +15,7 @@ namespace Shop.Query.User.DTOs
         public Gender Gender { get; set; }
         public bool IsActive { get; set; }
         public List<UserRoleDto> Roles { get; set; } = new();
-
+        public bool IsEmailConfirmed { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new();
         public List<UserAddressDto> UserAddresses { get; set; } = new();
     }
