@@ -18,5 +18,6 @@ namespace Shop.Query.User.DTOs
         public bool IsEmailConfirmed { get; set; }
         public List<UserRoleDto> UserRoles { get; set; } = new();
         public List<UserAddressDto> UserAddresses { get; set; } = new();
+        public string? PasswordResetToken { get; set; }
     }
 }

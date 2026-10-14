@@ -1,16 +1,21 @@
 ﻿using Common.Aplication;
 using Common.Aplication.SecurityUtil;
+using Common.Application.Email;
 using Common.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Shop.Api.Infrastructure.JwtUtil;
 using Shop.Api.ViewModels.Auth;
+using Shop.Application.Audit;
 using Shop.Application.User.AddToken;
 using Shop.Application.User.ConfirmEmail;
+using Shop.Application.User.ForgotPassword;
 using Shop.Application.User.Register;
 using Shop.Application.User.RemoveToken;
+using Shop.Application.User.ResetPassword;
 using Shop.Domain.UserAgg.Enums;
+using Shop.Infrastructure.Email;
 using Shop.Presentation.Facade.User;
 using Shop.Query.User.DTOs;
 using System;
@@ -24,11 +29,14 @@ namespace Shop.Api.Controllers
     {
         private readonly IUserFacade _userFacade;
         private readonly JwtConfig _jwtConfig;
+        private readonly IEmailService _emailService;
 
-        public AuthController(IUserFacade userFacade, JwtConfig jwtConfig)
+
+        public AuthController(IUserFacade userFacade, JwtConfig jwtConfig,IEmailService emailService)
         {
             _userFacade = userFacade;
             _jwtConfig = jwtConfig;
+            _emailService = emailService;
         }
 
         [HttpPost("register")]
@@ -114,6 +122,52 @@ namespace Shop.Api.Controllers
                 return Ok(new ApiResult { IsSuccess = true });
 
             return BadRequest(result.Message);
+        }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiResult>> ForgotPassword(
+        [FromBody] ForgotPasswordViewModel viewModel)
+        {
+            var result = await _userFacade.ForgotPassword(new ForgotPasswordCommand(viewModel.Email));
+            if (result.Status != OperationResultStatus.Success)
+                return CommandResult(result);
+
+            var user = await _userFacade.GetUserByEmail(viewModel.Email);
+            if (user == null)
+                return Ok(new ApiResult { IsSuccess = true }); 
+
+            var resetLink = $"https://yourdomain.com/api/Auth/reset-password?email={user.Email}&token={user.PasswordResetToken}";
+
+            var emailBody = $@"
+            <h2>بازیابی رمز عبور</h2>
+            <p>برای تنظیم رمز جدید روی لینک زیر کلیک کنید:</p>
+            <a href='{resetLink}'>بازیابی رمز عبور</a>
+            <p>این لینک تا ۲ ساعت اعتبار دارد.</p>
+            <p>اگر شما این درخواست را نداده‌اید، این ایمیل را نادیده بگیرید.</p>
+            ";
+
+            await _emailService.SendEmailAsync(
+                user.Email,
+                "بازیابی رمز عبور",
+                emailBody);
+
+            return Ok(new ApiResult { IsSuccess = true });
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiResult>> ResetPassword(
+            [FromBody] ResetPasswordViewModel viewModel)
+        {
+            var result = await _userFacade.ResetPassword(new ResetPasswordCommand(
+                viewModel.Email,
+                viewModel.Token,
+                viewModel.NewPassword,
+                viewModel.ConfirmNewPassword
+            ));
+
+            return CommandResult(result);
         }
 
         [HttpDelete("logout")]

@@ -22,6 +22,7 @@ namespace Shop.Query.User
                 Gender = user.Gender,
                 IsActive = user.IsActive,
                 IsEmailConfirmed = user.IsEmailConfirmed,
+                PasswordResetToken = user.PasswordResetToken,
                 CreatedDate = user.CreatedAt,
                 UpdatedDate = user.UpdatedAt,
                 UserRoles = user.UserRoles?.Select(MapRole).ToList() ?? new List<UserRoleDto>(),

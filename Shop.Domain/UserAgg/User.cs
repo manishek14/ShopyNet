@@ -50,12 +50,14 @@ namespace Shop.Domain.UserAgg
         public List<UserRole> UserRoles { get; private set; }
         public List<Wallet> Wallets { get; private set; }
         public List<UserAddress> UserAddresses { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime? UpdatedAt { get; private set; }
         public bool IsActive { get; private set; } = true;
         public bool IsEmailConfirmed { get; private set; }
         public string? EmailConfirmationToken { get; private set; }
         public DateTime? EmailConfirmationTokenExpireAt { get; private set; }
+        public string? PasswordResetToken { get; private set; }
+        public DateTime? PasswordResetTokenExpireAt { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime? UpdatedAt { get; private set; }
 
         public static User Register(
             string email,
@@ -214,6 +216,44 @@ namespace Shop.Domain.UserAgg
                 return false;
 
             if (EmailConfirmationTokenExpireAt == null || EmailConfirmationTokenExpireAt < DateTime.Now)
+                return false;
+
+            return true;
+        }
+
+        public void GeneratePasswordResetToken(string token, DateTime expireAt)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                throw new InvalidDataException("Token cannot be empty.");
+
+            PasswordResetToken = token;
+            PasswordResetTokenExpireAt = expireAt;
+            UpdatedAt = DateTime.Now;
+        }
+
+        public void ResetPassword(string newHashedPassword, string token)
+        {
+            if (!IsPasswordResetTokenValid(token))
+                throw new InvalidOperationException("Invalid or expired reset token.");
+
+            if (string.IsNullOrWhiteSpace(newHashedPassword))
+                throw new InvalidDataException("Password cannot be empty.");
+
+            Password = newHashedPassword;
+            PasswordResetToken = null;
+            PasswordResetTokenExpireAt = null;
+            UpdatedAt = DateTime.Now;
+        }
+
+        public bool IsPasswordResetTokenValid(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                return false;
+
+            if (PasswordResetToken != token)
+                return false;
+
+            if (PasswordResetTokenExpireAt == null || PasswordResetTokenExpireAt < DateTime.Now)
                 return false;
 
             return true;

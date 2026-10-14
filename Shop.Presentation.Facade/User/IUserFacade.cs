@@ -6,10 +6,12 @@ using Shop.Application.User.ChargeWallet;
 using Shop.Application.User.ConfirmEmail;
 using Shop.Application.User.Edit;
 using Shop.Application.User.EditAddress;
+using Shop.Application.User.ForgotPassword;
 using Shop.Application.User.GenerateEmailToken;
 using Shop.Application.User.Register;
 using Shop.Application.User.RemoveAddress;
 using Shop.Application.User.RemoveToken;
+using Shop.Application.User.ResetPassword;
 using Shop.Application.User.SetRoles;
 using Shop.Query.User.DTOs;
 using System;
@@ -41,6 +43,7 @@ namespace Shop.Presentation.Facade.User
         Task<UserTokenDto> GetUserTokenByRefreshToken(string hashRefreshToken);
         Task<OperationResult> GenerateEmailConfirmationToken(GenerateEmailConfirmationTokenCommand command);
         Task<OperationResult> ConfirmEmail(ConfirmEmailCommand command);
-
+        Task<OperationResult> ForgotPassword(ForgotPasswordCommand command);
+        Task<OperationResult> ResetPassword(ResetPasswordCommand command);
     }
 }
